@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import { useNostrPublish } from '@/hooks/useNostrPublish';
-import { useToast } from '@/hooks/useToast';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { useGrokSummary } from '@/hooks/useGrokSummary';
+import { useState } from "react";
+import { useNostrPublish } from "@/hooks/useNostrPublish";
+import { useToast } from "@/hooks/useToast";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useGrokSummary } from "@/hooks/useGrokSummary";
 
 export function AdminPostForm() {
-  const [title, setTitle] = useState('');
-  const [datetime, setDatetime] = useState('');
-  const [content, setContent] = useState('');
+  const [title, setTitle] = useState("");
+  const [datetime, setDatetime] = useState("");
+  const [content, setContent] = useState("");
   const { mutateAsync: publish } = useNostrPublish();
   const { toast } = useToast();
   const { socialist, communist, summarize } = useGrokSummary();
@@ -21,17 +21,15 @@ export function AdminPostForm() {
       const event = await publish({
         kind: 1,
         content: noteContent,
-        tags: [
-          ['published_at', datetime || new Date().toISOString()],
-        ],
+        tags: [["published_at", datetime || new Date().toISOString()]],
       });
-      await summarize(noteContent, event.id);
-      toast({ title: 'Post published' });
-      setTitle('');
-      setDatetime('');
-      setContent('');
+      // await summarize(noteContent, event.id);
+      toast({ title: "Post published" });
+      setTitle("");
+      setDatetime("");
+      setContent("");
     } catch (err) {
-      toast({ title: 'Failed to post', variant: 'destructive' });
+      toast({ title: "Failed to post", variant: "destructive" });
     }
   };
 
@@ -59,13 +57,17 @@ export function AdminPostForm() {
       {socialist && (
         <div className="space-y-2">
           <p className="font-semibold">Socialist Summary</p>
-          <p className="text-sm text-gray-700 dark:text-gray-300">{socialist}</p>
+          <p className="text-sm text-gray-700 dark:text-gray-300">
+            {socialist}
+          </p>
         </div>
       )}
       {communist && (
         <div className="space-y-2">
           <p className="font-semibold">Communist Summary</p>
-          <p className="text-sm text-gray-700 dark:text-gray-300">{communist}</p>
+          <p className="text-sm text-gray-700 dark:text-gray-300">
+            {communist}
+          </p>
         </div>
       )}
     </div>
