@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useGrokSummary } from '@/hooks/useGrokSummary';
 
-export function AdminArticleForm() {
+export function AdminPostForm() {
   const [title, setTitle] = useState('');
   const [datetime, setDatetime] = useState('');
   const [content, setContent] = useState('');
@@ -17,16 +17,16 @@ export function AdminArticleForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await publish({
-        kind: 30023,
-        content,
+      const noteContent = `${title}\n\n${content}`;
+      const event = await publish({
+        kind: 1,
+        content: noteContent,
         tags: [
-          ['title', title],
           ['published_at', datetime || new Date().toISOString()],
         ],
       });
-      await summarize(content);
-      toast({ title: 'Article posted' });
+      await summarize(noteContent, event.id);
+      toast({ title: 'Post published' });
       setTitle('');
       setDatetime('');
       setContent('');
