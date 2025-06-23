@@ -12,7 +12,7 @@ export function AdminPostForm() {
   const [content, setContent] = useState("");
   const { mutateAsync: publish } = useNostrPublish();
   const { toast } = useToast();
-  const { socialist, communist, summarize } = useGrokSummary();
+  const { socialist, capitalist, summarize } = useGrokSummary();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +23,8 @@ export function AdminPostForm() {
         content: noteContent,
         tags: [["published_at", datetime || new Date().toISOString()]],
       });
-      // await summarize(noteContent, event.id);
+      alert("x");
+      await summarize(noteContent, event.id);
       toast({ title: "Post published" });
       setTitle("");
       setDatetime("");
@@ -62,11 +63,11 @@ export function AdminPostForm() {
           </p>
         </div>
       )}
-      {communist && (
+      {capitalist && (
         <div className="space-y-2">
-          <p className="font-semibold">Communist Summary</p>
+          <p className="font-semibold">Capitalist Summary</p>
           <p className="text-sm text-gray-700 dark:text-gray-300">
-            {communist}
+            {capitalist}
           </p>
         </div>
       )}
