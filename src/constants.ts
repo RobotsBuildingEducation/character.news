@@ -1,0 +1,1 @@
+export const ADMIN_NPUB = 'npub14vskcp90k6gwp6sxjs2jwwqpcmahg6wz3h5vzq0yn6crrsq0utts52axlt';
