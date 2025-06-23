@@ -1,0 +1,3 @@
+export const ADMIN_NPUB = 'npub14vskcp90k6gwp6sxjs2jwwqpcmahg6wz3h5vzq0yn6crrsq0utts52axlt';
+export const SOCIALISM_NSEC = 'nsec1y3tt05l8g945akrr6rnmzsesja9yllry97ph5s303qpggvteyvgqyc0typ';
+export const CAPITALISM_NSEC = 'nsec1yu033d0rpdqdhwte8rz0s5gqqkanpnnt64e3qgps9345nj85z9ws8ty3lj';
