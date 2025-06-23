@@ -3,29 +3,13 @@ import { nip19, getEventHash, getPublicKey } from "nostr-tools";
 import { SOCIALISM_NSEC, CAPITALISM_NSEC } from "@/constants";
 import { useNostrPublish } from "@/hooks/useNostrPublish";
 import { useNostrPublishWithKey } from "./useNostrPublishWithKey";
+import { model } from "@/lib/firebaseResources";
 
-async function callGrok(
-  prompt: string
-  // signal?: AbortSignal
-) {
-  const res = await fetch("https://api.x.ai/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer nvm`,
-    },
-    body: JSON.stringify({
-      model: "grok-3-latest",
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.9,
-      stream: false,
-    }),
-    // signal,
-  });
-  if (!res.ok) throw new Error(`Grok API error: ${res.statusText}`);
-  const { choices } = await res.json();
-  return choices[0].message.content.trim();
-}
+const callGrok = async (prompt: string) => {
+  const result = await model.generateContent(prompt);
+  // result.response is a GenerateContentResponse
+  return result.response.text();
+};
 
 export function useGrokSummary() {
   const { mutateAsync: publishAnon } = useNostrPublishWithKey();
