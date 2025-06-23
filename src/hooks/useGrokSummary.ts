@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNostr } from '@nostrify/react';
-import { nip19, getEventHash, getPublicKey, signEvent } from 'nostr-tools';
+import { nip19, getEventHash, getPublicKey } from 'nostr-tools';
+import { signEvent } from 'nostr-tools/pure';
 import { SOCIALISM_NSEC, CAPITALISM_NSEC } from '@/constants';
 
 export function useGrokSummary() {
