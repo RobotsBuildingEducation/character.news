@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useGrokSummary } from "@/hooks/useGrokSummary";
 
-export function AdminPostForm() {
+export function AdminArticleForm() {
   const [title, setTitle] = useState("");
   const [datetime, setDatetime] = useState("");
   const [content, setContent] = useState("");
@@ -17,15 +17,16 @@ export function AdminPostForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const noteContent = `${title}\n\n${content}`;
-      const event = await publish({
-        kind: 1,
-        content: noteContent,
-        tags: [["published_at", datetime || new Date().toISOString()]],
+      await publish({
+        kind: 30023,
+        content,
+        tags: [
+          ["title", title],
+          ["published_at", datetime || new Date().toISOString()],
+        ],
       });
-
-      await summarize(noteContent, event.id);
-      toast({ title: "Post published" });
+      await summarize(content);
+      toast({ title: "Article posted" });
       setTitle("");
       setDatetime("");
       setContent("");
@@ -63,11 +64,11 @@ export function AdminPostForm() {
           </p>
         </div>
       )}
-      {capitalist && (
+      {communist && (
         <div className="space-y-2">
-          <p className="font-semibold">Capitalist Summary</p>
+          <p className="font-semibold">Communist Summary</p>
           <p className="text-sm text-gray-700 dark:text-gray-300">
-            {capitalist}
+            {communist}
           </p>
         </div>
       )}

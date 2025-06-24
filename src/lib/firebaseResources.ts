@@ -21,11 +21,17 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const ai = getAI(app, { backend: new VertexAIBackend() });
 
-export const appCheck = initializeAppCheck(app, {
+if (window.location.hostname === "localhost") {
+  self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+}
+// Initialize App Check with reCAPTCHA v3
+const appCheck = initializeAppCheck(app, {
   provider: new ReCaptchaV3Provider("6LeQS2srAAAAAFFBhi8gCv5rcFy0XEwEccUIb69R"),
   isTokenAutoRefreshEnabled: true,
 });
+
+const analytics = getAnalytics(app);
+const ai = getAI(app, { backend: new VertexAIBackend() });
+
 export const model = getGenerativeModel(ai, { model: "gemini-2.5-flash" });

@@ -31,7 +31,7 @@ export function useGrokSummary() {
   const summarize = async (content: string, parentId: string) => {
     const basePrompt = `Summarize the following text from a`;
     const prompts = [
-      `${basePrompt} socialist  st perspective:\n\n${content}`,
+      `${basePrompt} socialist perspective:\n\n${content}`,
       `${basePrompt} capitalist perspective:\n\n${content}`,
     ];
 

@@ -1,15 +1,15 @@
-import { useSeoMeta } from '@unhead/react';
-import { LoginArea } from '@/components/auth/LoginArea';
-import { useIsAdmin } from '@/hooks/useIsAdmin';
-import { AdminPostForm } from '@/components/AdminPostForm';
-import { useNutsack } from '@/hooks/useNutsack';
-import { Button } from '@/components/ui/button';
-import { PostFeed } from '@/components/PostFeed';
+import { useSeoMeta } from "@unhead/react";
+import { LoginArea } from "@/components/auth/LoginArea";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { AdminPostForm } from "@/components/AdminPostForm";
+import { useNutsack } from "@/hooks/useNutsack";
+import { Button } from "@/components/ui/button";
+import { PostFeed } from "@/components/PostFeed";
 
 const Index = () => {
   useSeoMeta({
-    title: 'Character News',
-    description: 'News with AI summaries',
+    title: "Character News",
+    description: "News with AI summaries",
   });
 
   const isAdmin = useIsAdmin();
@@ -27,12 +27,16 @@ const Index = () => {
           <AdminPostForm />
         </div>
       )}
-      {!isAdmin && (
-        <Button onClick={() => zap(1)}>Zap Admin</Button>
-      )}
+      {!isAdmin && <Button onClick={() => zap(1)}>Zap Admin</Button>}
       <div className="w-full max-w-xl">
         <PostFeed />
       </div>
+      {/* {isAdmin && (
+        <div className="w-full max-w-xl">
+          <AdminArticleForm />
+        </div>
+      )} */}
+      {!isAdmin && <Button onClick={() => zap(1)}>Zap Admin</Button>}
     </div>
   );
 };
