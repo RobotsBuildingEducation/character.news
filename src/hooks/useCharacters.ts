@@ -1,6 +1,6 @@
 import { collection, getDocs, addDoc } from "firebase/firestore";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { generatePrivateKey, getPublicKey, nip19 } from "nostr-tools";
+import { generateSecretKey, getPublicKey, nip19 } from "nostr-tools";
 import { db } from "@/lib/firebaseResources";
 import { HISTORIAN_NSEC } from "@/constants";
 
@@ -40,7 +40,7 @@ export function useCharacters() {
 
   const addCharacter = useMutation({
     mutationFn: async ({ name, prompt }: { name: string; prompt: string }) => {
-      const sk = generatePrivateKey();
+      const sk = generateSecretKey();
       const pk = getPublicKey(sk);
       const nsec = nip19.nsecEncode(sk);
       const npub = nip19.npubEncode(pk);
