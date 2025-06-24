@@ -37,7 +37,7 @@ const defaultConfig: AppConfig = {
 
 const presetRelays = [
   { url: 'wss://relay.damus.io', name: 'Damus' },
-  { url: 'wss://relay.primal.net', name: 'Primal' },
+  { url: 'wss://relay.primal.net:443', name: 'Primal' },
 ];
 
 export function App() {
