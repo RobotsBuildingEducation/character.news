@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAI, getGenerativeModel, VertexAIBackend } from "firebase/ai";
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
+import { getFirestore } from "firebase/firestore";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -33,5 +34,6 @@ const appCheck = initializeAppCheck(app, {
 
 const analytics = getAnalytics(app);
 const ai = getAI(app, { backend: new VertexAIBackend() });
+export const db = getFirestore(app);
 
 export const model = getGenerativeModel(ai, { model: "gemini-2.5-flash" });

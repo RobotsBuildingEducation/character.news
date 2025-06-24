@@ -12,20 +12,19 @@ export function AdminArticleForm() {
   const [content, setContent] = useState("");
   const { mutateAsync: publish } = useNostrPublish();
   const { toast } = useToast();
-  const { socialist, capitalist, summarize } = useGrokSummary();
+  const { historian, summarize } = useGrokSummary();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await publish({
+      const event = await publish({
         kind: 30023,
-        content,
+        content: `Title: ${title}\n\n${content}`,
         tags: [
-          ["title", title],
           ["published_at", datetime || new Date().toISOString()],
         ],
       });
-      await summarize(content);
+      await summarize(content, event.id);
       toast({ title: "Article posted" });
       setTitle("");
       setDatetime("");
@@ -56,20 +55,10 @@ export function AdminArticleForm() {
         />
         <Button type="submit">Post Article</Button>
       </form>
-      {socialist && (
+      {historian && (
         <div className="space-y-2">
-          <p className="font-semibold">Socialist Summary</p>
-          <p className="text-sm text-gray-700 dark:text-gray-300">
-            {socialist}
-          </p>
-        </div>
-      )}
-      {communist && (
-        <div className="space-y-2">
-          <p className="font-semibold">Communist Summary</p>
-          <p className="text-sm text-gray-700 dark:text-gray-300">
-            {communist}
-          </p>
+          <p className="font-semibold">Historian Summary</p>
+          <p className="text-sm text-gray-700 dark:text-gray-300">{historian}</p>
         </div>
       )}
     </div>

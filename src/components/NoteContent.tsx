@@ -13,12 +13,22 @@ interface NoteContentProps {
 
 /** Parses content of text note events so that URLs and hashtags are linkified. */
 export function NoteContent({
-  event, 
-  className, 
-}: NoteContentProps) {  
+  event,
+  className,
+}: NoteContentProps) {
+  const lines = event.content.split("\n");
+  let header = "";
+  let text = event.content;
+  if (lines[0].startsWith("Title:")) {
+    header = lines[0].replace("Title:", "").trim();
+    text = lines.slice(1).join("\n");
+  } else if (lines[0].startsWith("Character:")) {
+    header = lines[0].replace("Character:", "").trim();
+    text = lines.slice(1).join("\n");
+  }
+
   // Process the content to render mentions, links, etc.
-  const content = useMemo(() => {
-    const text = event.content;
+  const body = useMemo(() => {
     
     // Regex to find URLs, Nostr references, and hashtags
     const regex = /(https?:\/\/[^\s]+)|nostr:(npub1|note1|nprofile1|nevent1)([023456789acdefghjklmnpqrstuvwxyz]+)|(#\w+)/g;
@@ -105,11 +115,21 @@ export function NoteContent({
     }
     
     return parts;
-  }, [event]);
+  }, [text]);
 
   return (
-    <div className={cn("whitespace-pre-wrap break-words", className)}>
-      {content.length > 0 ? content : event.content}
+    <div className={cn("whitespace-pre-wrap break-words space-y-1", className)}>
+      {header && (
+        <a
+          href={`https://primal.net/e/${event.id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-lg hover:underline block"
+        >
+          {header}
+        </a>
+      )}
+      <div>{body.length > 0 ? body : text}</div>
     </div>
   );
 }

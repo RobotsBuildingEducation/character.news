@@ -12,12 +12,12 @@ export function AdminPostForm() {
   const [content, setContent] = useState("");
   const { mutateAsync: publish } = useNostrPublish();
   const { toast } = useToast();
-  const { socialist, capitalist, summarize } = useGrokSummary();
+  const { historian, summarize } = useGrokSummary();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const noteContent = `${title}\n\n${content}`;
+      const noteContent = `Title: ${title}\n\n${content}`;
       const event = await publish({
         kind: 1,
         content: noteContent,
@@ -55,20 +55,10 @@ export function AdminPostForm() {
         />
         <Button type="submit">Post Article</Button>
       </form>
-      {socialist && (
+      {historian && (
         <div className="space-y-2">
-          <p className="font-semibold">Socialist Summary</p>
-          <p className="text-sm text-gray-700 dark:text-gray-300">
-            {socialist}
-          </p>
-        </div>
-      )}
-      {capitalist && (
-        <div className="space-y-2">
-          <p className="font-semibold">Capitalist Summary</p>
-          <p className="text-sm text-gray-700 dark:text-gray-300">
-            {capitalist}
-          </p>
+          <p className="font-semibold">Historian Summary</p>
+          <p className="text-sm text-gray-700 dark:text-gray-300">{historian}</p>
         </div>
       )}
     </div>
