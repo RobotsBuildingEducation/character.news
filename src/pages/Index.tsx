@@ -2,9 +2,11 @@ import { useSeoMeta } from "@unhead/react";
 import { LoginArea } from "@/components/auth/LoginArea";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { AdminPostForm } from "@/components/AdminPostForm";
+import { AdminCharacterForm } from "@/components/AdminCharacterForm";
 import { useNutsack } from "@/hooks/useNutsack";
 import { Button } from "@/components/ui/button";
 import { PostFeed } from "@/components/PostFeed";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   useSeoMeta({
@@ -23,14 +25,18 @@ const Index = () => {
         <Button onClick={() => deposit(1)}>Deposit 1</Button>
       </div>
       {isAdmin && (
-        <div className="w-full max-w-xl">
+        <div className="w-full max-w-xl space-y-4">
           <AdminPostForm />
+          <AdminCharacterForm />
         </div>
       )}
       {!isAdmin && <Button onClick={() => zap(1)}>Zap Admin</Button>}
       <div className="w-full max-w-xl">
         <PostFeed />
       </div>
+      <Link to="/about" className="text-blue-500 hover:underline">
+        About
+      </Link>
       {/* {isAdmin && (
         <div className="w-full max-w-xl">
           <AdminArticleForm />
