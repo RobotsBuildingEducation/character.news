@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { HISTORIAN_NSEC } from "@/constants";
 import { useNostrPublishWithKey } from "./useNostrPublishWithKey";
 import { model } from "@/lib/firebaseResources";
+import type { Character } from "./useCharacters";
 
 const callGrok = async (prompt: string) => {
   const result = await model.generateContent(prompt);
@@ -11,7 +11,7 @@ const callGrok = async (prompt: string) => {
 
 export function useGrokSummary() {
   const { mutateAsync: publishAnon } = useNostrPublishWithKey();
-  const [historian, setHistorian] = useState("");
+  const [summaries, setSummaries] = useState<Record<string, string>>({});
 
   const publishEvent = async (
     nsec: string,
@@ -25,29 +25,26 @@ export function useGrokSummary() {
     });
   };
 
-  const summarize = async (content: string, parentId: string) => {
-    const prompt =
-      `Give information and educational background before discussing the current state of affairs. Additionally, offer frequent debates related to the matter and forms of propaganda that may be flourishing as a result of it. Make it expository and connect the dots for the audience to process further. Context:` +
-      "\n\n" +
-      content;
-
-    // const controller = new AbortController();
-    // const timeout = setTimeout(() => controller.abort(), 5000);
-
-    try {
-      const his = await callGrok(prompt);
-      setHistorian(his);
-      await publishEvent(
-        HISTORIAN_NSEC,
-        `Character: Historian\n\n${his}`,
-        parentId
-      );
-    } catch (err) {
-      console.error("Grok summary or publish failed:", err);
-    } finally {
-      // clearTimeout(timeout);
+  const summarize = async (
+    content: string,
+    parentId: string,
+    characters: Character[]
+  ) => {
+    for (const char of characters) {
+      const prompt = `${char.prompt}\n\n${content}`;
+      try {
+        const summary = await callGrok(prompt);
+        setSummaries((s) => ({ ...s, [char.name]: summary }));
+        await publishEvent(
+          char.nsec,
+          `Character: ${char.name}\n\n${summary}`,
+          parentId
+        );
+      } catch (err) {
+        console.error("Grok summary or publish failed:", err);
+      }
     }
   };
 
-  return { historian, summarize };
+  return { summaries, summarize };
 }

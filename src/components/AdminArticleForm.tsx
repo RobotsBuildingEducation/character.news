@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useGrokSummary } from "@/hooks/useGrokSummary";
+import { useCharacters } from "@/hooks/useCharacters";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export function AdminArticleForm() {
   const [title, setTitle] = useState("");
@@ -12,7 +14,15 @@ export function AdminArticleForm() {
   const [content, setContent] = useState("");
   const { mutateAsync: publish } = useNostrPublish();
   const { toast } = useToast();
-  const { historian, summarize } = useGrokSummary();
+  const { summaries, summarize } = useGrokSummary();
+  const { characters } = useCharacters();
+  const [selected, setSelected] = useState<string[]>([]);
+
+  const toggle = (id: string) => {
+    setSelected((prev) =>
+      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
+    );
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,11 +30,12 @@ export function AdminArticleForm() {
       const event = await publish({
         kind: 30023,
         content: `Title: ${title}\n\n${content}`,
-        tags: [
-          ["published_at", datetime || new Date().toISOString()],
-        ],
+        tags: [["published_at", datetime || new Date().toISOString()]],
       });
-      await summarize(content, event.id);
+      const selectedChars = characters.filter((c) =>
+        selected.includes(c.id ?? c.nsec)
+      );
+      await summarize(content, event.id, selectedChars);
       toast({ title: "Article posted" });
       setTitle("");
       setDatetime("");
@@ -53,14 +64,25 @@ export function AdminArticleForm() {
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
+        <div className="space-y-2">
+          {characters.map((c) => (
+            <label key={c.id ?? c.nsec} className="flex items-center gap-2">
+              <Checkbox
+                checked={selected.includes(c.id ?? c.nsec)}
+                onCheckedChange={() => toggle(c.id ?? c.nsec)}
+              />
+              {c.name}
+            </label>
+          ))}
+        </div>
         <Button type="submit">Post Article</Button>
       </form>
-      {historian && (
-        <div className="space-y-2">
-          <p className="font-semibold">Historian Summary</p>
-          <p className="text-sm text-gray-700 dark:text-gray-300">{historian}</p>
+      {Object.entries(summaries).map(([name, text]) => (
+        <div key={name} className="space-y-2">
+          <p className="font-semibold">{name} Summary</p>
+          <p className="text-sm text-gray-700 dark:text-gray-300">{text}</p>
         </div>
-      )}
+      ))}
     </div>
   );
 }

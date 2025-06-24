@@ -2,6 +2,7 @@ import { collection, getDocs, addDoc } from "firebase/firestore";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { generatePrivateKey, getPublicKey, nip19 } from "nostr-tools";
 import { db } from "@/lib/firebaseResources";
+import { HISTORIAN_NSEC } from "@/constants";
 
 export interface Character {
   id?: string;
@@ -15,6 +16,19 @@ const colRef = collection(db, "characters");
 
 export function useCharacters() {
   const queryClient = useQueryClient();
+
+  const historian = (() => {
+    const sk = nip19.decode(HISTORIAN_NSEC).data as Uint8Array;
+    const pk = getPublicKey(sk);
+    return {
+      id: "historian",
+      name: "Historian",
+      prompt:
+        "Give information and educational background before discussing the current state of affairs. Additionally, offer frequent debates related to the matter and forms of propaganda that may be flourishing as a result of it. Make it expository and connect the dots for the audience to process further.",
+      nsec: HISTORIAN_NSEC,
+      npub: nip19.npubEncode(pk),
+    } as Character;
+  })();
 
   const charactersQuery = useQuery({
     queryKey: ["characters"],
@@ -35,5 +49,8 @@ export function useCharacters() {
     onSuccess: () => queryClient.invalidateQueries(["characters"]),
   });
 
-  return { characters: charactersQuery.data ?? [], addCharacter };
+  return {
+    characters: [historian, ...(charactersQuery.data ?? [])],
+    addCharacter,
+  };
 }

@@ -6,6 +6,7 @@ import { AdminCharacterForm } from "@/components/AdminCharacterForm";
 import { useNutsack } from "@/hooks/useNutsack";
 import { Button } from "@/components/ui/button";
 import { PostFeed } from "@/components/PostFeed";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   useSeoMeta({
@@ -33,6 +34,9 @@ const Index = () => {
       <div className="w-full max-w-xl">
         <PostFeed />
       </div>
+      <Link to="/about" className="text-blue-500 hover:underline">
+        About
+      </Link>
       {/* {isAdmin && (
         <div className="w-full max-w-xl">
           <AdminArticleForm />
