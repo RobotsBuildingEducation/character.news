@@ -29,8 +29,6 @@ function PostItem({ event }: PostItemProps) {
     },
   });
 
-  console.log("replies", replies);
-
   const parseHeader = (ev: NostrEvent) => {
     const lines = ev.content.split("\n");
     let title = "";
@@ -48,7 +46,8 @@ function PostItem({ event }: PostItemProps) {
       idx++;
     }
     const text = lines.slice(idx).join(" ");
-    const header = title || character || text.slice(0, 50) + (text.length > 50 ? "..." : "");
+    const header =
+      title || character || text.slice(0, 50) + (text.length > 50 ? "..." : "");
     return header;
   };
 
@@ -58,7 +57,7 @@ function PostItem({ event }: PostItemProps) {
         <AccordionTrigger>{parseHeader(event)}</AccordionTrigger>
         <AccordionContent>
           <NoteContent event={event} />
-          {replies.map((r) => (
+          {replies.map((r, index) => (
             <div key={r.id} className="pt-4 border-l pl-4">
               <Accordion type="single" collapsible>
                 <AccordionItem value={r.id}>
@@ -99,11 +98,17 @@ export function PostFeed() {
     return () => clearInterval(id);
   }, [refetch]);
 
+  console.log("events", events);
+
+  let xr = events.reverse();
   return (
     <div className="space-y-4">
-      {events.map((e) => (
-        <PostItem key={e.id} event={e} />
-      ))}
+      {xr.map((e, index) => {
+        if (index === 0) {
+          return;
+        }
+        return <PostItem key={e.id} event={e} />;
+      })}
     </div>
   );
 }

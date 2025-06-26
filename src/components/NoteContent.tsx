@@ -14,6 +14,7 @@ interface NoteContentProps {
 
 /** Parses content of text note events so that URLs and hashtags are linkified. */
 export function NoteContent({ event, className }: NoteContentProps) {
+  console.log("event", event);
   const lines = event.content.split("\n");
   let title = "";
   let character = "";
@@ -77,10 +78,7 @@ export function NoteContent({ event, className }: NoteContentProps) {
           } else {
             // For other types, just show as a link
             parts.push(
-              <Link
-                key={`nostr-${keyCounter++}`}
-                to={`/${nostrId}`}
-              >
+              <Link key={`nostr-${keyCounter++}`} to={`/${nostrId}`}>
                 {fullMatch}
               </Link>
             );
@@ -93,10 +91,7 @@ export function NoteContent({ event, className }: NoteContentProps) {
         // Handle hashtags
         const tag = hashtag.slice(1); // Remove the #
         parts.push(
-          <Link
-            key={`hashtag-${keyCounter++}`}
-            to={`/t/${tag}`}
-          >
+          <Link key={`hashtag-${keyCounter++}`} to={`/t/${tag}`}>
             {hashtag}
           </Link>
         );
