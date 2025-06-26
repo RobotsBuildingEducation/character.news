@@ -24,7 +24,7 @@ export function useCharacters() {
       id: "historian",
       name: "Historian",
       prompt:
-        "Give information and educational background before discussing the current state of affairs. Additionally, offer frequent debates related to the matter and forms of propaganda that may be flourishing as a result of it. Make it expository and connect the dots for the audience to process further.",
+        "Give information and educational background before discussing the current state of affairs. Additionally, offer frequent debates related to the matter and forms of propaganda that may be flourishing as a result of it. Make it expository and connect the dots in the timeline for the audience to process further. You aren't writing as a character but the essence of the character in order to write intelligently on the subject. The only formatting should be spaces between paragraphs. Do not use lists at all, write as if it's an essay of news.",
       nsec: HISTORIAN_NSEC,
       npub: nip19.npubEncode(pk),
     } as Character;
