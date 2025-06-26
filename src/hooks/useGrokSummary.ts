@@ -31,14 +31,15 @@ export function useGrokSummary() {
     characters: Character[]
   ) => {
     for (const char of characters) {
-      const prompt = `${char.prompt}\n\n${content}`;
+      const prompt =
+        `${char.prompt}\n\n${content}` +
+        "Give respective information and educational background before discussing the current state of affairs. Additionally, offer frequent debates related to the matter and forms of propaganda that may be flourishing as a result of it. Make it expository and connect the dots in the timeline for the audience to process further.  You aren't writing as a character but the essence of the character in order to write intelligently on the subject. The only formatting should be spaces between paragraphs. Do not use lists at all, write as if it's an essay of news. Headers should be a max of ### size. Never indicate any context or attributes provided in this prompt in your response, like saying things like 'as an xyz character..'. Speak as if you are already known and read and need no introductions.";
       try {
         const summary = await callGrok(prompt);
         setSummaries((s) => ({ ...s, [char.name]: summary }));
         await publishEvent(
           char.nsec,
-          `Character: ${char.name}\n\n${summary}` +
-            "You aren't writing as a character but the essence of the character in order to write intelligently on the subject. The only formatting should be spaces between paragraphs. Do not use lists at all, write as if it's an essay of news. Headers should be a max of ### size. Never indicate any context or attributes provided in this prompt in your response, like saying things like 'as an xyz..'",
+          `Character: ${char.name}\n\n${summary}`,
           parentId
         );
       } catch (err) {

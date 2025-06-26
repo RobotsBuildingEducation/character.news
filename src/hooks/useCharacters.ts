@@ -24,7 +24,7 @@ export function useCharacters() {
       id: "historian",
       name: "Historian",
       prompt:
-        "Give information and educational background before discussing the current state of affairs. Additionally, offer frequent debates related to the matter and forms of propaganda that may be flourishing as a result of it. Make it expository and connect the dots in the timeline for the audience to process further. You aren't writing as a character but the essence of the character in order to write intelligently on the subject. The only formatting should be spaces between paragraphs. Do not use lists at all, write as if it's an essay of news.",
+        "Give information and educational background before discussing the current state of affairs. Additionally, offer frequent debates related to the matter and forms of propaganda that may be flourishing as a result of it. Make it expository and connect the dots in the timeline for the audience to process further. You aren't writing as a character but the essence of the character in order to write intelligently on the subject. The only formatting should be spaces between paragraphs. Do not use lists at all, write as if it's an essay of news. Headers should be a max of ### size. Never indicate any context or attributes provided in this prompt in your response, like saying things like 'as a historian..'",
       nsec: HISTORIAN_NSEC,
       npub: nip19.npubEncode(pk),
     } as Character;
@@ -50,7 +50,7 @@ export function useCharacters() {
   });
 
   return {
-    characters: [historian, ...(charactersQuery.data ?? [])],
+    characters: [...(charactersQuery.data ?? [])],
     addCharacter,
   };
 }
