@@ -96,6 +96,15 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background-color: hsl(var(--background));
+    background-image:
+      radial-gradient(circle at 0.5px 0.5px, rgba(0,0,0,0.05) 1px, transparent 0),
+      radial-gradient(circle at 2.5px 2.5px, rgba(0,0,0,0.04) 1px, transparent 0);
+    background-size: 4px 4px;
+  }
+
+  a {
+    @apply underline text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100;
   }
 }

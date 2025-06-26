@@ -5,6 +5,12 @@ import { nip19 } from "nostr-tools";
 import { ADMIN_NPUB } from "@/constants";
 import { NoteContent } from "./NoteContent";
 import { useEffect } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 interface PostItemProps {
   event: NostrEvent;
@@ -23,21 +29,51 @@ function PostItem({ event }: PostItemProps) {
     },
   });
 
-  console.log("replies", replies);
-  return (
-    <div className="space-y-2 p-4 rounded-md border-b">
-      <NoteContent event={event} />
+  const parseHeader = (ev: NostrEvent) => {
+    const lines = ev.content.split("\n");
+    let title = "";
+    let character = "";
+    let idx = 0;
+    while (idx < lines.length) {
+      const line = lines[idx].trim();
+      if (line.startsWith("Title:")) {
+        title = line.replace("Title:", "").trim();
+      } else if (line.startsWith("Character:")) {
+        character = line.replace("Character:", "").trim();
+      } else if (line !== "") {
+        break;
+      }
+      idx++;
+    }
+    const text = lines.slice(idx).join(" ");
+    const header =
+      title || character || text.slice(0, 50) + (text.length > 50 ? "..." : "");
+    return header;
+  };
 
-      {replies.map((r) => (
-        <div
-          key={r.id}
-          className="pt-0 border-l pl-4"
-          style={{ marginTop: 48 }}
-        >
-          <NoteContent event={r} />
-        </div>
-      ))}
-    </div>
+  return (
+    <Accordion type="single" collapsible>
+      <AccordionItem value={event.id}>
+        <AccordionTrigger>{parseHeader(event)}</AccordionTrigger>
+        <AccordionContent>
+          <NoteContent event={event} />
+          {replies.map((r, index) => (
+            <div key={r.id} className="pt-4 border-l pl-4">
+              <Accordion type="single" collapsible>
+                <AccordionItem value={r.id}>
+                  <AccordionTrigger className="text-sm">
+                    {parseHeader(r)}
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <NoteContent event={r} />
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+          ))}
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 }
 
@@ -62,11 +98,17 @@ export function PostFeed() {
     return () => clearInterval(id);
   }, [refetch]);
 
+  console.log("events", events);
+
+  let xr = events.reverse();
   return (
     <div className="space-y-4">
-      {events.map((e) => (
-        <PostItem key={e.id} event={e} />
-      ))}
+      {xr.map((e, index) => {
+        if (index === 0) {
+          return;
+        }
+        return <PostItem key={e.id} event={e} />;
+      })}
     </div>
   );
 }

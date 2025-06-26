@@ -14,6 +14,7 @@ interface NoteContentProps {
 
 /** Parses content of text note events so that URLs and hashtags are linkified. */
 export function NoteContent({ event, className }: NoteContentProps) {
+  console.log("event", event);
   const lines = event.content.split("\n");
   let title = "";
   let character = "";
@@ -59,7 +60,6 @@ export function NoteContent({ event, className }: NoteContentProps) {
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-500 hover:underline"
           >
             {url}
           </a>
@@ -78,11 +78,7 @@ export function NoteContent({ event, className }: NoteContentProps) {
           } else {
             // For other types, just show as a link
             parts.push(
-              <Link
-                key={`nostr-${keyCounter++}`}
-                to={`/${nostrId}`}
-                className="text-blue-500 hover:underline"
-              >
+              <Link key={`nostr-${keyCounter++}`} to={`/${nostrId}`}>
                 {fullMatch}
               </Link>
             );
@@ -95,11 +91,7 @@ export function NoteContent({ event, className }: NoteContentProps) {
         // Handle hashtags
         const tag = hashtag.slice(1); // Remove the #
         parts.push(
-          <Link
-            key={`hashtag-${keyCounter++}`}
-            to={`/t/${tag}`}
-            className="text-blue-500 hover:underline"
-          >
+          <Link key={`hashtag-${keyCounter++}`} to={`/t/${tag}`}>
             {hashtag}
           </Link>
         );
@@ -128,7 +120,7 @@ export function NoteContent({ event, className }: NoteContentProps) {
           href={`https://primal.net/e/${event.id}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-semibold text-xl hover:underline block"
+          className="font-semibold text-xl block"
         >
           {title}
         </a>
@@ -153,13 +145,7 @@ function NostrMention({ pubkey }: { pubkey: string }) {
   const displayName = author.data?.metadata?.name ?? genUserName(pubkey);
 
   return (
-    <Link
-      to={`/${npub}`}
-      className={cn(
-        "font-medium hover:underline",
-        hasRealName ? "text-blue-500" : "text-gray-500 hover:text-gray-700"
-      )}
-    >
+    <Link to={`/${npub}`} className="font-medium">
       @{displayName}
     </Link>
   );
