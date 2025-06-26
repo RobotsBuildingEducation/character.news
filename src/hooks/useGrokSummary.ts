@@ -37,7 +37,8 @@ export function useGrokSummary() {
         setSummaries((s) => ({ ...s, [char.name]: summary }));
         await publishEvent(
           char.nsec,
-          `Character: ${char.name}\n\n${summary}`,
+          `Character: ${char.name}\n\n${summary}` +
+            "You aren't writing as a character but the essence of the character in order to write intelligently on the subject. The only formatting should be spaces between paragraphs. Do not use lists at all, write as if it's an essay of news. Headers should be a max of ### size. Never indicate any context or attributes provided in this prompt in your response, like saying things like 'as an xyz..'",
           parentId
         );
       } catch (err) {

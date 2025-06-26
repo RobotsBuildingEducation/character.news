@@ -127,7 +127,13 @@ export function NoteContent({ event, className }: NoteContentProps) {
           {header}
         </a>
       )}
-      <div>{body.length > 0 ? <Markdown children={body[0]} /> : text}</div>
+      <div>
+        {body.length > 0 ? (
+          <Markdown children={body[0]} />
+        ) : (
+          <Markdown children={text} />
+        )}
+      </div>
     </div>
   );
 }
