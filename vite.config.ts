@@ -9,13 +9,11 @@ export default defineConfig(() => ({
     host: "::",
     port: 8080,
   },
-  plugins: [
-    react(),
-  ],
+  plugins: [react()],
   test: {
     globals: true,
-    environment: 'jsdom',
-    setupFiles: './src/test/setup.ts',
+    environment: "jsdom",
+    setupFiles: "./src/test/setup.ts",
     onConsoleLog(log) {
       return !log.includes("React Router Future Flag Warning");
     },
