@@ -133,4 +133,26 @@ describe('NoteContent', () => {
     expect(linkText).not.toMatch(/^@npub1/); // Should not be a truncated npub
     expect(linkText).toEqual("@Swift Falcon");
   });
+
+  it('extracts title and character headers', () => {
+    const event: NostrEvent = {
+      id: 'test-id',
+      pubkey: 'test-pubkey',
+      created_at: Math.floor(Date.now() / 1000),
+      kind: 1,
+      tags: [],
+      content: `Title: Big News\nCharacter: Reporter\n\nThe body text.`,
+      sig: 'test-sig',
+    };
+
+    render(
+      <TestApp>
+        <NoteContent event={event} />
+      </TestApp>
+    );
+
+    expect(screen.getByRole('link', { name: 'Big News' })).toBeInTheDocument();
+    expect(screen.getByText('Reporter')).toBeInTheDocument();
+    expect(screen.getByText('The body text.')).toBeInTheDocument();
+  });
 });

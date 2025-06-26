@@ -19,30 +19,32 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center gap-6 p-6 bg-gray-100 dark:bg-gray-900">
+      <h1 className="text-2xl font-bold">Character News</h1>
+      <Link to="/about" className="text-blue-500 hover:underline">
+        About
+      </Link>
       <LoginArea className="max-w-60" />
-      <div className="text-center space-y-4">
+      {/* <div className="text-center space-y-4">
         <p className="text-gray-800 dark:text-gray-200">Balance: {balance}</p>
         <Button onClick={() => deposit(1)}>Deposit 1</Button>
-      </div>
+      </div> */}
       {isAdmin && (
         <div className="w-full max-w-xl space-y-4">
           <AdminPostForm />
           <AdminCharacterForm />
         </div>
       )}
-      {!isAdmin && <Button onClick={() => zap(1)}>Zap Admin</Button>}
+      {/* {!isAdmin && <Button onClick={() => zap(1)}>Zap Admin</Button>} */}
       <div className="w-full max-w-xl">
         <PostFeed />
       </div>
-      <Link to="/about" className="text-blue-500 hover:underline">
-        About
-      </Link>
+
       {/* {isAdmin && (
         <div className="w-full max-w-xl">
           <AdminArticleForm />
         </div>
       )} */}
-      {!isAdmin && <Button onClick={() => zap(1)}>Zap Admin</Button>}
+      {/* {!isAdmin && <Button onClick={() => zap(1)}>Zap Admin</Button>} */}
     </div>
   );
 };

@@ -1,10 +1,10 @@
-import { useNostr } from '@nostrify/react';
-import { useQuery } from '@tanstack/react-query';
-import { type NostrEvent } from '@nostrify/nostrify';
-import { nip19 } from 'nostr-tools';
-import { ADMIN_NPUB } from '@/constants';
-import { NoteContent } from './NoteContent';
-import { useEffect } from 'react';
+import { useNostr } from "@nostrify/react";
+import { useQuery } from "@tanstack/react-query";
+import { type NostrEvent } from "@nostrify/nostrify";
+import { nip19 } from "nostr-tools";
+import { ADMIN_NPUB } from "@/constants";
+import { NoteContent } from "./NoteContent";
+import { useEffect } from "react";
 
 interface PostItemProps {
   event: NostrEvent;
@@ -13,21 +13,27 @@ interface PostItemProps {
 function PostItem({ event }: PostItemProps) {
   const { nostr } = useNostr();
   const { data: replies = [] } = useQuery({
-    queryKey: ['replies', event.id],
+    queryKey: ["replies", event.id],
     queryFn: async ({ signal }) => {
       const events = await nostr.query(
-        [{ kinds: [1], '#e': [event.id], limit: 2 }],
-        { signal: AbortSignal.any([signal, AbortSignal.timeout(2000)]) },
+        [{ kinds: [1], "#e": [event.id], limit: 3 }],
+        { signal: AbortSignal.any([signal, AbortSignal.timeout(2000)]) }
       );
       return events.sort((a, b) => a.created_at - b.created_at);
     },
   });
 
+  console.log("replies", replies);
   return (
-    <div className="space-y-2 p-4 border rounded-md">
+    <div className="space-y-2 p-4 rounded-md border-b">
       <NoteContent event={event} />
+
       {replies.map((r) => (
-        <div key={r.id} className="pl-4 border-l">
+        <div
+          key={r.id}
+          className="pt-0 border-l pl-4"
+          style={{ marginTop: 48 }}
+        >
           <NoteContent event={r} />
         </div>
       ))}
@@ -39,11 +45,11 @@ export function PostFeed() {
   const { nostr } = useNostr();
   const ADMIN_PUBKEY = nip19.decode(ADMIN_NPUB).data as string;
   const { data: events = [], refetch } = useQuery({
-    queryKey: ['feed'],
+    queryKey: ["feed"],
     queryFn: async ({ signal }) => {
       const events = await nostr.query(
         [{ kinds: [1], authors: [ADMIN_PUBKEY], limit: 20 }],
-        { signal: AbortSignal.any([signal, AbortSignal.timeout(2000)]) },
+        { signal: AbortSignal.any([signal, AbortSignal.timeout(2000)]) }
       );
       return events.sort((a, b) => b.created_at - a.created_at);
     },
