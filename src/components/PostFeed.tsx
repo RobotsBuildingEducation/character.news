@@ -58,8 +58,16 @@ function PostItem({ event }: PostItemProps) {
         <AccordionContent>
           <NoteContent event={event} />
           {replies.map((r, index) => (
-            <div key={r.id} className="pt-4 border-l pl-4">
-              <Accordion type="single" collapsible>
+            <div
+              key={r.id}
+              className="pt-4 border-l pl-4"
+              style={{ borderLeft: "1px solid #bfbfbf" }}
+            >
+              <Accordion
+                type="single"
+                collapsible
+                style={{ borderBottom: "1px solid #bfbfbf" }}
+              >
                 <AccordionItem value={r.id}>
                   <AccordionTrigger className="text-sm">
                     {parseHeader(r)}

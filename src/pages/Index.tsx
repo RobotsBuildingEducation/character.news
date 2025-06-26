@@ -33,7 +33,10 @@ const Index = () => {
         </div>
       )}
       {/* {!isAdmin && <Button onClick={() => zap(1)}>Zap Admin</Button>} */}
-      <div className="w-full max-w-xl">
+      <div
+        className="w-full max-w-xl"
+        style={{ borderBottom: "1px solid #bfbfbf" }}
+      >
         <PostFeed />
       </div>
 
