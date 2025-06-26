@@ -124,10 +124,6 @@ describe('NoteContent', () => {
     const mention = screen.getByRole('link');
     expect(mention).toBeInTheDocument();
     
-    // Should have muted styling for generated names (gray instead of blue)
-    expect(mention).toHaveClass('text-gray-500');
-    expect(mention).not.toHaveClass('text-blue-500');
-    
     // The text should start with @ and contain a generated name (not a truncated npub)
     const linkText = mention.textContent;
     expect(linkText).not.toMatch(/^@npub1/); // Should not be a truncated npub

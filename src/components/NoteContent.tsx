@@ -59,7 +59,6 @@ export function NoteContent({ event, className }: NoteContentProps) {
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-500 hover:underline"
           >
             {url}
           </a>
@@ -81,7 +80,6 @@ export function NoteContent({ event, className }: NoteContentProps) {
               <Link
                 key={`nostr-${keyCounter++}`}
                 to={`/${nostrId}`}
-                className="text-blue-500 hover:underline"
               >
                 {fullMatch}
               </Link>
@@ -98,7 +96,6 @@ export function NoteContent({ event, className }: NoteContentProps) {
           <Link
             key={`hashtag-${keyCounter++}`}
             to={`/t/${tag}`}
-            className="text-blue-500 hover:underline"
           >
             {hashtag}
           </Link>
@@ -128,7 +125,7 @@ export function NoteContent({ event, className }: NoteContentProps) {
           href={`https://primal.net/e/${event.id}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-semibold text-xl hover:underline block"
+          className="font-semibold text-xl block"
         >
           {title}
         </a>
@@ -153,13 +150,7 @@ function NostrMention({ pubkey }: { pubkey: string }) {
   const displayName = author.data?.metadata?.name ?? genUserName(pubkey);
 
   return (
-    <Link
-      to={`/${npub}`}
-      className={cn(
-        "font-medium hover:underline",
-        hasRealName ? "text-blue-500" : "text-gray-500 hover:text-gray-700"
-      )}
-    >
+    <Link to={`/${npub}`} className="font-medium">
       @{displayName}
     </Link>
   );

@@ -18,7 +18,7 @@ const About = () => {
         </p>
 
         <br />
-        <Link to="/" className="text-blue-500 hover:underline">
+        <Link to="/">
           Back to front page
         </Link>
       </div>
