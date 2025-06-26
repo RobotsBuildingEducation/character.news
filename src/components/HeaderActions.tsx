@@ -18,7 +18,7 @@ export default function HeaderActions({ className }: HeaderActionsProps) {
         className="flex items-center gap-2 px-4 py-2  bg-primary text-primary-foreground w-full font-medium transition-all hover:bg-primary/90 animate-scale-in"
         size="icon"
         onClick={() => setOpen(true)}
-        style={{ backgroundColor: "#9e9e9e", color: "black" }}
+        style={{ backgroundColor: "#bdbdbd", color: "black" }}
       >
         <Download className="w-4 h-4" />
       </Button>

@@ -32,7 +32,7 @@ export function LoginArea({ className }: LoginAreaProps) {
         <Button
           onClick={() => setLoginDialogOpen(true)}
           className="flex items-center gap-2 px-4 py-2  bg-primary text-primary-foreground w-full font-medium transition-all hover:bg-primary/90 animate-scale-in"
-          style={{ backgroundColor: "#9e9e9e", color: "black" }}
+          style={{ backgroundColor: "#bdbdbd", color: "black" }}
         >
           <User className="w-4 h-4" />
         </Button>
