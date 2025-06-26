@@ -15,15 +15,21 @@ interface NoteContentProps {
 /** Parses content of text note events so that URLs and hashtags are linkified. */
 export function NoteContent({ event, className }: NoteContentProps) {
   const lines = event.content.split("\n");
-  let header = "";
-  let text = event.content;
-  if (lines[0].startsWith("Title:")) {
-    header = lines[0].replace("Title:", "").trim();
-    text = lines.slice(1).join("\n");
-  } else if (lines[0].startsWith("Character:")) {
-    header = lines[0].replace("Character:", "").trim();
-    text = lines.slice(1).join("\n");
+  let title = "";
+  let character = "";
+  let idx = 0;
+  while (idx < lines.length) {
+    const line = lines[idx].trim();
+    if (line.startsWith("Title:")) {
+      title = line.replace("Title:", "").trim();
+    } else if (line.startsWith("Character:")) {
+      character = line.replace("Character:", "").trim();
+    } else if (line !== "") {
+      break;
+    }
+    idx++;
   }
+  const text = lines.slice(idx).join("\n");
 
   // Process the content to render mentions, links, etc.
   const body = useMemo(() => {
@@ -117,16 +123,17 @@ export function NoteContent({ event, className }: NoteContentProps) {
 
   return (
     <div className={cn("whitespace-pre-wrap break-words space-y-1", className)}>
-      {header && (
+      {title && (
         <a
           href={`https://primal.net/e/${event.id}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-semibold text-lg hover:underline block"
+          className="font-semibold text-xl hover:underline block"
         >
-          {header}
+          {title}
         </a>
       )}
+      {character && <p className="font-bold text-sm">{character}</p>}
       <div>
         {body.length > 0 ? (
           <Markdown children={body[0]} />
