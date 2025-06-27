@@ -4,7 +4,7 @@ import { type NostrEvent } from "@nostrify/nostrify";
 import { nip19 } from "nostr-tools";
 import { ADMIN_NPUB } from "@/constants";
 import { NoteContent } from "./NoteContent";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -29,7 +29,7 @@ function PostItem({ event }: PostItemProps) {
     },
   });
 
-  const parseHeader = (ev: NostrEvent) => {
+  const parseEvent = (ev: NostrEvent) => {
     const lines = ev.content.split("\n");
     let title = "";
     let character = "";
@@ -45,19 +45,32 @@ function PostItem({ event }: PostItemProps) {
       }
       idx++;
     }
-    const text = lines.slice(idx).join(" ");
+    const text = lines.slice(idx).join("\n").trim();
     const header =
       title || character || text.slice(0, 50) + (text.length > 50 ? "..." : "");
-    return header;
+    return { title, character, text, header };
   };
+
+  const filteredReplies = useMemo(() => {
+    const map = new Map<string, NostrEvent>();
+    for (const r of replies) {
+      const { text } = parseEvent(r);
+      if (!text) continue;
+      const existing = map.get(r.pubkey);
+      if (!existing || existing.created_at < r.created_at) {
+        map.set(r.pubkey, r);
+      }
+    }
+    return Array.from(map.values()).sort((a, b) => a.created_at - b.created_at);
+  }, [replies]);
 
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value={event.id}>
-        <AccordionTrigger>{parseHeader(event)}</AccordionTrigger>
+        <AccordionTrigger>{parseEvent(event).header}</AccordionTrigger>
         <AccordionContent>
           <NoteContent event={event} />
-          {replies.map((r, index) => (
+          {filteredReplies.map((r, index) => (
             <div
               key={r.id}
               className="pt-4 border-l pl-4"
@@ -70,7 +83,7 @@ function PostItem({ event }: PostItemProps) {
               >
                 <AccordionItem value={r.id}>
                   <AccordionTrigger className="text-sm">
-                    {parseHeader(r)}
+                    {parseEvent(r).header}
                   </AccordionTrigger>
                   <AccordionContent>
                     <NoteContent event={r} />
