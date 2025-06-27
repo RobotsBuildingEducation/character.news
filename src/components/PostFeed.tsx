@@ -22,7 +22,7 @@ function PostItem({ event }: PostItemProps) {
     queryKey: ["replies", event.id],
     queryFn: async ({ signal }) => {
       const events = await nostr.query(
-        [{ kinds: [1], "#e": [event.id], limit: 3 }],
+        [{ kinds: [1], "#e": [event.id], limit: 4 }],
         { signal: AbortSignal.any([signal, AbortSignal.timeout(2000)]) }
       );
       return events.sort((a, b) => a.created_at - b.created_at);
