@@ -2,6 +2,7 @@ import { useSeoMeta } from "@unhead/react";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { AdminPostForm } from "@/components/AdminPostForm";
 import { AdminCharacterForm } from "@/components/AdminCharacterForm";
+import { AdminCharacterPostEditor } from "@/components/AdminCharacterPostEditor";
 import { useNutsack } from "@/hooks/useNutsack";
 import { Button } from "@/components/ui/button";
 import { PostFeed } from "@/components/PostFeed";
@@ -33,6 +34,7 @@ const Index = () => {
         <div className="w-full max-w-xl space-y-4">
           <AdminPostForm />
           <AdminCharacterForm />
+          <AdminCharacterPostEditor />
         </div>
       )}
       {/* {!isAdmin && <Button onClick={() => zap(1)}>Zap Admin</Button>} */}
