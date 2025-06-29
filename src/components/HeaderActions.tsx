@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { LoginArea } from "@/components/auth/LoginArea";
 import DownloadAppModal from "./DownloadAppModal";
+import { Wallet } from "./Wallet";
 
 interface HeaderActionsProps {
   className?: string;
@@ -26,6 +27,7 @@ export default function HeaderActions({ className }: HeaderActionsProps) {
         <Download className="w-4 h-4" />
       </Button>
       <LoginArea className="max-w-60" />
+      <Wallet />
 
       <DownloadAppModal open={open} onOpenChange={setOpen} />
     </div>
