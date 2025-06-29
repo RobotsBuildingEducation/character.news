@@ -121,11 +121,11 @@ export function PostFeed() {
 
   console.log("events", events);
 
-  let xr = events.reverse();
+  // let xr = events.reverse();
   return (
     <div className="space-y-4">
-      {xr.map((e, index) => {
-        if (index === 0) {
+      {events.map((e, index) => {
+        if (index === events.length - 1) {
           return;
         }
         return <PostItem key={e.id} event={e} />;
