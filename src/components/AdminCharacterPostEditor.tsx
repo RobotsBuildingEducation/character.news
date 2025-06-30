@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useCharacters } from "@/hooks/useCharacters";
-import { useNostrPublishWithKey } from "@/hooks/useNostrPublishWithKey";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { useCharacters } from "~/hooks/useCharacters";
+import { useNostrPublishWithKey } from "~/hooks/useNostrPublishWithKey";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Textarea } from "~/components/ui/textarea";
 
 export function AdminCharacterPostEditor() {
   const { characters } = useCharacters();

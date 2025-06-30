@@ -2,7 +2,7 @@ import { useNostr } from "@nostrify/react";
 import { useQuery } from "@tanstack/react-query";
 import { type NostrEvent } from "@nostrify/nostrify";
 import { nip19 } from "nostr-tools";
-import { ADMIN_NPUB } from "@/constants";
+import { ADMIN_NPUB } from "~/constants";
 import { NoteContent } from "./NoteContent";
 import { useEffect, useMemo } from "react";
 import {
@@ -10,7 +10,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
+} from "~/components/ui/accordion";
 
 interface PostItemProps {
   event: NostrEvent;

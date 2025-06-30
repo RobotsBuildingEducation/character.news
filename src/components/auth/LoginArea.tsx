@@ -3,12 +3,12 @@
 
 import { useState } from "react";
 import { User } from "lucide-react";
-import { Button } from "@/components/ui/button.tsx";
+import { Button } from "~/components/ui/button.tsx";
 import LoginDialog from "./LoginDialog";
 import SignupDialog from "./SignupDialog";
-import { useLoggedInAccounts } from "@/hooks/useLoggedInAccounts";
+import { useLoggedInAccounts } from "~/hooks/useLoggedInAccounts";
 import { AccountSwitcher } from "./AccountSwitcher";
-import { cn } from "@/lib/utils";
+import { cn } from "~/lib/utils";
 
 export interface LoginAreaProps {
   className?: string;

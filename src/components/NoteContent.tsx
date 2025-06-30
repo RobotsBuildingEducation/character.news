@@ -2,9 +2,9 @@ import { useMemo } from "react";
 import { type NostrEvent } from "@nostrify/nostrify";
 import { Link } from "react-router-dom";
 import { nip19 } from "nostr-tools";
-import { useAuthor } from "@/hooks/useAuthor";
-import { genUserName } from "@/lib/genUserName";
-import { cn } from "@/lib/utils";
+import { useAuthor } from "~/hooks/useAuthor";
+import { genUserName } from "~/lib/genUserName";
+import { cn } from "~/lib/utils";
 import Markdown from "react-markdown";
 
 interface NoteContentProps {

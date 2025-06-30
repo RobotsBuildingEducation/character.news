@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { useIsAdmin } from "@/hooks/useIsAdmin";
-import { useNutsack } from "@/hooks/useNutsack";
-import { useUserWallet } from "@/hooks/useUserWallet";
-import { useSendNutzap } from "@/hooks/useSendNutzap";
-import { ADMIN_NPUB } from "@/constants";
+import { Button } from "~/components/ui/button";
+import { useIsAdmin } from "~/hooks/useIsAdmin";
+import { useNutsack } from "~/hooks/useNutsack";
+import { useUserWallet } from "~/hooks/useUserWallet";
+import { useSendNutzap } from "~/hooks/useSendNutzap";
+import { ADMIN_NPUB } from "~/constants";
 import { nip19 } from "nostr-tools";
 import { QRCodeSVG } from "qrcode.react";
-import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useCurrentUser } from "~/hooks/useCurrentUser";
 
 export function Wallet() {
   const { balance, invoice, deposit, zap } = useNutsack();

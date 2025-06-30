@@ -1,11 +1,11 @@
 import { useSeoMeta } from "@unhead/react";
-import { useIsAdmin } from "@/hooks/useIsAdmin";
-import { AdminPostForm } from "@/components/AdminPostForm";
-import { AdminCharacterForm } from "@/components/AdminCharacterForm";
-import { AdminCharacterPostEditor } from "@/components/AdminCharacterPostEditor";
-import { useNutsack } from "@/hooks/useNutsack";
-import { Button } from "@/components/ui/button";
-import { PostFeed } from "@/components/PostFeed";
+import { useIsAdmin } from "~/hooks/useIsAdmin";
+import { AdminPostForm } from "~/components/AdminPostForm";
+import { AdminCharacterForm } from "~/components/AdminCharacterForm";
+import { AdminCharacterPostEditor } from "~/components/AdminCharacterPostEditor";
+import { useNutsack } from "~/hooks/useNutsack";
+import { Button } from "~/components/ui/button";
+import { PostFeed } from "~/components/PostFeed";
 import { Link } from "react-router-dom";
 
 const Index = () => {
@@ -22,7 +22,7 @@ const Index = () => {
       className="min-h-screen flex flex-col items-center gap-6 p-6"
       style={{ marginTop: 56 }}
     >
-      <h1 className="text-2xl font-bold">Character News</h1>
+      <h1 className="text -2xl font-bold">Character News</h1>
       <Link to="/about" className="text-sm">
         About
       </Link>

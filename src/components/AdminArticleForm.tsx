@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useNostrPublish } from "@/hooks/useNostrPublish";
-import { useToast } from "@/hooks/useToast";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useGrokSummary } from "@/hooks/useGrokSummary";
-import { useCharacters } from "@/hooks/useCharacters";
-import { Checkbox } from "@/components/ui/checkbox";
+import { useNostrPublish } from "~/hooks/useNostrPublish";
+import { useToast } from "~/hooks/useToast";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Textarea } from "~/components/ui/textarea";
+import { useGrokSummary } from "~/hooks/useGrokSummary";
+import { useCharacters } from "~/hooks/useCharacters";
+import { Checkbox } from "~/components/ui/checkbox";
 
 export function AdminArticleForm() {
   const [title, setTitle] = useState("");

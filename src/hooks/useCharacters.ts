@@ -1,8 +1,8 @@
 import { collection, getDocs, addDoc } from "firebase/firestore";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { generateSecretKey, getPublicKey, nip19 } from "nostr-tools";
-import { db } from "@/lib/firebaseResources";
-import { HISTORIAN_NSEC } from "@/constants";
+import { db } from "~/lib/firebaseResources";
+import { HISTORIAN_NSEC } from "~/constants";
 
 export interface Character {
   id?: string;

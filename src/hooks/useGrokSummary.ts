@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNostrPublishWithKey } from "./useNostrPublishWithKey";
-import { model } from "@/lib/firebaseResources";
+import { model } from "~/lib/firebaseResources";
 import type { Character } from "./useCharacters";
 
 const callGrok = async (prompt: string) => {

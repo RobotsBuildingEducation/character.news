@@ -1,7 +1,7 @@
-import { useCallback, useRef, useState } from 'react';
-import { useLocalStorage } from './useLocalStorage';
-import NDK, { NDKZapper, NDKUser } from '@nostr-dev-kit/ndk';
-import { NDKCashuWallet } from '@nostr-dev-kit/ndk-wallet';
+import { useCallback, useRef, useState } from "react";
+import { useLocalStorage } from "./useLocalStorage";
+import NDK, { NDKZapper, NDKUser } from "@nostr-dev-kit/ndk";
+import { NDKCashuWallet } from "@nostr-dev-kit/ndk-wallet";
 
 /**
  * Thin wrapper around the NDKCashuWallet API. The actual wallet
@@ -10,8 +10,8 @@ import { NDKCashuWallet } from '@nostr-dev-kit/ndk-wallet';
  */
 
 export function useNutsack() {
-  const [balance, setBalance] = useLocalStorage<number>('nutsack:balance', 0);
-  const [invoice, setInvoice] = useState<string>('');
+  const [balance, setBalance] = useLocalStorage<number>("nutsack:balance", 0);
+  const [invoice, setInvoice] = useState<string>("");
   const ndkRef = useRef<NDK>();
   const walletRef = useRef<NDKCashuWallet>();
 
@@ -23,48 +23,54 @@ export function useNutsack() {
   const init = useCallback(async () => {
     if (!ndkRef.current) {
       ndkRef.current = new NDK({
-        explicitRelayUrls: ['wss://relay.damus.io', 'wss://relay.primal.net'],
+        explicitRelayUrls: ["wss://relay.damus.io", "wss://relay.primal.net"],
       });
       await ndkRef.current.connect();
     }
     if (!walletRef.current) {
       walletRef.current = new NDKCashuWallet(ndkRef.current);
-      walletRef.current.mints = ['https://mint.minibits.cash/Bitcoin'];
-      walletRef.current.walletId = 'Character News Wallet';
+      walletRef.current.mints = ["https://mint.minibits.cash/Bitcoin"];
+      walletRef.current.walletId = "Character News Wallet";
       await walletRef.current.getP2pk();
       walletRef.current.start({ since: Date.now() });
-      walletRef.current.on('balance_updated', (wb) => {
+      walletRef.current.on("balance_updated", (wb) => {
         const amt = wb?.amount ?? walletRef.current?.balance?.amount ?? 0;
         setBalance(amt);
       });
     }
   }, [setBalance]);
 
-  const deposit = useCallback(async (amount: number) => {
-    await init();
-    if (!walletRef.current) return;
-    const dep = walletRef.current.deposit(amount, walletRef.current.mints[0]);
-    const inv: string = await dep.start();
-    setInvoice(inv);
-    dep.on('success', () => {
-      setBalance(walletRef.current?.balance?.amount ?? 0);
-    });
-    return inv;
-  }, [init, setBalance]);
+  const deposit = useCallback(
+    async (amount: number) => {
+      await init();
+      if (!walletRef.current) return;
+      const dep = walletRef.current.deposit(amount, walletRef.current.mints[0]);
+      const inv: string = await dep.start();
+      setInvoice(inv);
+      dep.on("success", () => {
+        setBalance(walletRef.current?.balance?.amount ?? 0);
+      });
+      return inv;
+    },
+    [init, setBalance]
+  );
 
   /**
    * Send sats to the recipient. After the zap completes the local balance is
    * decreased. Any errors are bubbled up to the caller.
    */
-  const zap = useCallback(async (recipientNpub: string, amount: number) => {
-    await init();
-    if (!walletRef.current || !ndkRef.current) return;
-    ndkRef.current.wallet = walletRef.current;
-    const user = new NDKUser({ pubkey: recipientNpub }, ndkRef.current);
-    const zapper = new NDKZapper(user, amount, 'sat');
-    await zapper.zap();
-    setBalance(walletRef.current.balance?.amount ?? 0);
-  }, [init, setBalance]);
+  const zap = useCallback(
+    async (recipientNpub: string, amount: number) => {
+      await init();
+      if (!walletRef.current || !ndkRef.current) return;
+      ndkRef.current.wallet = walletRef.current;
+      const user = new NDKUser({ pubkey: recipientNpub }, ndkRef.current);
+      const zapper = new NDKZapper(user, amount, "sat");
+      await zapper.zap();
+      setBalance(walletRef.current.balance?.amount ?? 0);
+    },
+    [init, setBalance]
+  );
 
   return { balance, invoice, deposit, zap };
 }

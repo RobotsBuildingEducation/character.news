@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Download, Wallet as WalletIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { LoginArea } from "@/components/auth/LoginArea";
+import { Button } from "~/components/ui/button";
+import { cn } from "~/lib/utils";
+import { LoginArea } from "~/components/auth/LoginArea";
 import DownloadAppModal from "./DownloadAppModal";
 import WalletDialog from "./WalletDialog";
-import { useLoggedInAccounts } from "@/hooks/useLoggedInAccounts";
+import { useLoggedInAccounts } from "~/hooks/useLoggedInAccounts";
 
 interface HeaderActionsProps {
   className?: string;
