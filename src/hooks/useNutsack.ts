@@ -1,7 +1,8 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState, useEffect } from "react";
 import { useLocalStorage } from "./useLocalStorage";
 import NDK, { NDKZapper, NDKUser } from "@nostr-dev-kit/ndk";
 import { NDKCashuWallet } from "@nostr-dev-kit/ndk-wallet";
+import { useCurrentUser } from "./useCurrentUser";
 
 /**
  * Thin wrapper around the NDKCashuWallet API. The actual wallet
@@ -14,6 +15,7 @@ export function useNutsack() {
   const [invoice, setInvoice] = useState<string>("");
   const ndkRef = useRef<NDK>();
   const walletRef = useRef<NDKCashuWallet>();
+  const { user } = useCurrentUser();
 
   /**
    * Request an invoice from the wallet for the given amount. The returned
@@ -39,6 +41,12 @@ export function useNutsack() {
       });
     }
   }, [setBalance]);
+
+  useEffect(() => {
+    if (user) {
+      void init();
+    }
+  }, [user, init]);
 
   const deposit = useCallback(
     async (amount: number) => {
