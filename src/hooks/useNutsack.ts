@@ -26,11 +26,17 @@ export function useNutsack() {
   console.log("user", user);
 
   const getPrivateKey = useCallback((signer: any): string | undefined => {
-    const sk = signer?.privateKey ?? signer?.secretKey;
-    if (sk) return sk;
-    const nsec = signer?.nsec;
+    if (!signer) return undefined;
+    const sk =
+      signer.privateKey ||
+      signer.secretKey ||
+      signer.privkey ||
+      signer.sk;
+    if (sk) return sk as string;
 
+    const nsec = signer.nsec;
     if (!nsec) return undefined;
+
     try {
       const data = nip19.decode(nsec).data as Uint8Array;
       return Buffer.from(data).toString("hex");
