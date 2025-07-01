@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState, useEffect } from "react";
 import { useLocalStorage } from "./useLocalStorage";
-import NDK, { NDKZapper, NDKUser } from "@nostr-dev-kit/ndk";
+import NDK, { NDKZapper, NDKUser, NDKNip07Signer } from "@nostr-dev-kit/ndk";
 import { NDKCashuWallet } from "@nostr-dev-kit/ndk-wallet";
 import { useCurrentUser } from "./useCurrentUser";
 
@@ -26,8 +26,11 @@ export function useNutsack() {
     if (!ndkRef.current) {
       ndkRef.current = new NDK({
         explicitRelayUrls: ["wss://relay.damus.io", "wss://relay.primal.net"],
+        signer: user ? new NDKNip07Signer(user.signer as any) : undefined,
       });
       await ndkRef.current.connect();
+    } else if (user && !ndkRef.current.signer) {
+      ndkRef.current.signer = new NDKNip07Signer(user.signer as any);
     }
     if (!walletRef.current) {
       walletRef.current = new NDKCashuWallet(ndkRef.current);
@@ -40,7 +43,7 @@ export function useNutsack() {
         setBalance(amt);
       });
     }
-  }, [setBalance]);
+  }, [setBalance, user]);
 
   useEffect(() => {
     if (user) {
