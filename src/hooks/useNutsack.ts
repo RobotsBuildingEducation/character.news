@@ -23,10 +23,13 @@ export function useNutsack() {
   const walletRef = useRef<NDKCashuWallet>();
   const { user } = useCurrentUser();
 
+  console.log("user", user);
+
   const getPrivateKey = useCallback((signer: any): string | undefined => {
     const sk = signer?.privateKey ?? signer?.secretKey;
     if (sk) return sk;
     const nsec = signer?.nsec;
+
     if (!nsec) return undefined;
     try {
       const data = nip19.decode(nsec).data as Uint8Array;
@@ -44,6 +47,7 @@ export function useNutsack() {
   const init = useCallback(async () => {
     if (!ndkRef.current) {
       const sk = user ? getPrivateKey(user.signer) : undefined;
+      console.log("Private", sk);
       ndkRef.current = new NDK({
         explicitRelayUrls: ["wss://relay.damus.io", "wss://relay.primal.net"],
         signer: sk ? new NDKPrivateKeySigner(sk) : (user?.signer as any),
@@ -53,7 +57,7 @@ export function useNutsack() {
       const sk = getPrivateKey(user.signer);
       ndkRef.current.signer = sk
         ? new NDKPrivateKeySigner(sk)
-        : ((user.signer as unknown) as any);
+        : (user.signer as unknown as any);
     }
     if (!walletRef.current) {
       walletRef.current = new NDKCashuWallet(ndkRef.current);
