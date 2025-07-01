@@ -53,7 +53,7 @@ export function useNutsack() {
 
   const deposit = useCallback(
     async (amount: number) => {
-      await init();
+      // await init();
       if (!walletRef.current) return;
       const dep = walletRef.current.deposit(amount, walletRef.current.mints[0]);
       const inv: string = await dep.start();
@@ -63,7 +63,11 @@ export function useNutsack() {
       });
       return inv;
     },
-    [init, setBalance]
+    [
+      // init
+      // ,
+      setBalance,
+    ]
   );
 
   /**
