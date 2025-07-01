@@ -1,6 +1,10 @@
 import { useCallback, useRef, useState, useEffect } from "react";
 import { useLocalStorage } from "./useLocalStorage";
-import NDK, { NDKZapper, NDKUser, NDKPrivateKeySigner } from "@nostr-dev-kit/ndk";
+import NDK, {
+  NDKZapper,
+  NDKUser,
+  NDKPrivateKeySigner,
+} from "@nostr-dev-kit/ndk";
 import { nip19 } from "nostr-tools";
 import { NDKCashuWallet } from "@nostr-dev-kit/ndk-wallet";
 import { useCurrentUser } from "./useCurrentUser";
