@@ -10,7 +10,8 @@ import { QRCodeSVG } from "qrcode.react";
 import { useCurrentUser } from "~/hooks/useCurrentUser";
 
 export function Wallet() {
-  const { balance, invoice, deposit, zap } = useNutsack();
+  const { balance, invoice, deposit, zap, createWallet, walletReady } =
+    useNutsack();
   const isAdmin = useIsAdmin();
   const { data } = useUserWallet();
   const sendZap = useSendNutzap();
@@ -47,10 +48,14 @@ export function Wallet() {
           Tokens: {data.tokens.length}
         </div>
       )}
-      <div className="flex gap-2">
-        <Button onClick={handleDeposit}>Deposit 10</Button>
-        {!isAdmin && <Button onClick={handleZap}>Zap Admin</Button>}
-      </div>
+      {!walletReady ? (
+        <Button onClick={createWallet}>Create Wallet</Button>
+      ) : (
+        <div className="flex gap-2">
+          <Button onClick={handleDeposit}>Deposit 10</Button>
+          {!isAdmin && <Button onClick={handleZap}>Zap Admin</Button>}
+        </div>
+      )}
       {depositing && <div className="text-xs">Generating invoice…</div>}
       {invoice && (
         <div className="mt-2">
