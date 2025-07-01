@@ -4,8 +4,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from "~/components/ui/dialog";
+import { Button } from "~/components/ui/button";
 import { MoreHorizontal, Share, SquarePlus } from "lucide-react";
 import type { FC } from "react";
 

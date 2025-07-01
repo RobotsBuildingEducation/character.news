@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useCurrentUser } from '@/hooks/useCurrentUser';
-import { useNostrPublish } from '@/hooks/useNostrPublish';
-import { useToast } from '@/hooks/useToast';
-import { Button } from '@/components/ui/button';
+import React, { useEffect, useRef } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useCurrentUser } from "~/hooks/useCurrentUser";
+import { useNostrPublish } from "~/hooks/useNostrPublish";
+import { useToast } from "~/hooks/useToast";
+import { Button } from "~/components/ui/button";
 import {
   Form,
   FormControl,
@@ -13,14 +13,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { Loader2, Upload } from 'lucide-react';
-import { NSchema as n, type NostrMetadata } from '@nostrify/nostrify';
-import { useQueryClient } from '@tanstack/react-query';
-import { useUploadFile } from '@/hooks/useUploadFile';
+} from "~/components/ui/form";
+import { Input } from "~/components/ui/input";
+import { Textarea } from "~/components/ui/textarea";
+import { Switch } from "~/components/ui/switch";
+import { Loader2, Upload } from "lucide-react";
+import { NSchema as n, type NostrMetadata } from "@nostrify/nostrify";
+import { useQueryClient } from "@tanstack/react-query";
+import { useUploadFile } from "~/hooks/useUploadFile";
 
 export const EditProfileForm: React.FC = () => {
   const queryClient = useQueryClient();
@@ -34,12 +34,12 @@ export const EditProfileForm: React.FC = () => {
   const form = useForm<NostrMetadata>({
     resolver: zodResolver(n.metadata()),
     defaultValues: {
-      name: '',
-      about: '',
-      picture: '',
-      banner: '',
-      website: '',
-      nip05: '',
+      name: "",
+      about: "",
+      picture: "",
+      banner: "",
+      website: "",
+      nip05: "",
       bot: false,
     },
   });
@@ -48,33 +48,37 @@ export const EditProfileForm: React.FC = () => {
   useEffect(() => {
     if (metadata) {
       form.reset({
-        name: metadata.name || '',
-        about: metadata.about || '',
-        picture: metadata.picture || '',
-        banner: metadata.banner || '',
-        website: metadata.website || '',
-        nip05: metadata.nip05 || '',
+        name: metadata.name || "",
+        about: metadata.about || "",
+        picture: metadata.picture || "",
+        banner: metadata.banner || "",
+        website: metadata.website || "",
+        nip05: metadata.nip05 || "",
         bot: metadata.bot || false,
       });
     }
   }, [metadata, form]);
 
   // Handle file uploads for profile picture and banner
-  const uploadPicture = async (file: File, field: 'picture' | 'banner') => {
+  const uploadPicture = async (file: File, field: "picture" | "banner") => {
     try {
       // The first tuple in the array contains the URL
       const [[_, url]] = await uploadFile(file);
       form.setValue(field, url);
       toast({
-        title: 'Success',
-        description: `${field === 'picture' ? 'Profile picture' : 'Banner'} uploaded successfully`,
+        title: "Success",
+        description: `${
+          field === "picture" ? "Profile picture" : "Banner"
+        } uploaded successfully`,
       });
     } catch (error) {
       console.error(`Failed to upload ${field}:`, error);
       toast({
-        title: 'Error',
-        description: `Failed to upload ${field === 'picture' ? 'profile picture' : 'banner'}. Please try again.`,
-        variant: 'destructive',
+        title: "Error",
+        description: `Failed to upload ${
+          field === "picture" ? "profile picture" : "banner"
+        }. Please try again.`,
+        variant: "destructive",
       });
     }
   };
@@ -82,9 +86,9 @@ export const EditProfileForm: React.FC = () => {
   const onSubmit = async (values: NostrMetadata) => {
     if (!user) {
       toast({
-        title: 'Error',
-        description: 'You must be logged in to update your profile',
-        variant: 'destructive',
+        title: "Error",
+        description: "You must be logged in to update your profile",
+        variant: "destructive",
       });
       return;
     }
@@ -95,7 +99,7 @@ export const EditProfileForm: React.FC = () => {
 
       // Clean up empty values
       for (const key in data) {
-        if (data[key] === '') {
+        if (data[key] === "") {
           delete data[key];
         }
       }
@@ -107,19 +111,19 @@ export const EditProfileForm: React.FC = () => {
       });
 
       // Invalidate queries to refresh the data
-      queryClient.invalidateQueries({ queryKey: ['logins'] });
-      queryClient.invalidateQueries({ queryKey: ['author', user.pubkey] });
+      queryClient.invalidateQueries({ queryKey: ["logins"] });
+      queryClient.invalidateQueries({ queryKey: ["author", user.pubkey] });
 
       toast({
-        title: 'Success',
-        description: 'Your profile has been updated',
+        title: "Success",
+        description: "Your profile has been updated",
       });
     } catch (error) {
-      console.error('Failed to update profile:', error);
+      console.error("Failed to update profile:", error);
       toast({
-        title: 'Error',
-        description: 'Failed to update your profile. Please try again.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to update your profile. Please try again.",
+        variant: "destructive",
       });
     }
   };
@@ -151,10 +155,10 @@ export const EditProfileForm: React.FC = () => {
             <FormItem>
               <FormLabel>Bio</FormLabel>
               <FormControl>
-                <Textarea 
-                  placeholder="Tell others about yourself" 
-                  className="resize-none" 
-                  {...field} 
+                <Textarea
+                  placeholder="Tell others about yourself"
+                  className="resize-none"
+                  {...field}
                 />
               </FormControl>
               <FormDescription>
@@ -176,7 +180,7 @@ export const EditProfileForm: React.FC = () => {
                 placeholder="https://example.com/profile.jpg"
                 description="URL to your profile picture. You can upload an image or provide a URL."
                 previewType="square"
-                onUpload={(file) => uploadPicture(file, 'picture')}
+                onUpload={(file) => uploadPicture(file, "picture")}
               />
             )}
           />
@@ -191,7 +195,7 @@ export const EditProfileForm: React.FC = () => {
                 placeholder="https://example.com/banner.jpg"
                 description="URL to a wide banner image for your profile. You can upload an image or provide a URL."
                 previewType="wide"
-                onUpload={(file) => uploadPicture(file, 'banner')}
+                onUpload={(file) => uploadPicture(file, "banner")}
               />
             )}
           />
@@ -254,9 +258,9 @@ export const EditProfileForm: React.FC = () => {
           )}
         />
 
-        <Button 
-          type="submit" 
-          className="w-full md:w-auto" 
+        <Button
+          type="submit"
+          className="w-full md:w-auto"
           disabled={isPending || isUploading}
         >
           {(isPending || isUploading) && (
@@ -280,7 +284,7 @@ interface ImageUploadFieldProps {
   label: string;
   placeholder: string;
   description: string;
-  previewType: 'square' | 'wide';
+  previewType: "square" | "wide";
   onUpload: (file: File) => void;
 }
 
@@ -302,14 +306,14 @@ const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
           <Input
             placeholder={placeholder}
             name={field.name}
-            value={field.value ?? ''}
-            onChange={e => field.onChange(e.target.value)}
+            value={field.value ?? ""}
+            onChange={(e) => field.onChange(e.target.value)}
             onBlur={field.onBlur}
           />
         </FormControl>
         <div className="flex items-center gap-2">
-          <input 
-            type="file" 
+          <input
+            type="file"
             ref={fileInputRef}
             accept="image/*"
             className="hidden"
@@ -330,19 +334,21 @@ const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
             Upload Image
           </Button>
           {field.value && (
-            <div className={`h-10 ${previewType === 'square' ? 'w-10' : 'w-24'} rounded overflow-hidden`}>
-              <img 
-                src={field.value} 
-                alt={`${label} preview`} 
+            <div
+              className={`h-10 ${
+                previewType === "square" ? "w-10" : "w-24"
+              } rounded overflow-hidden`}
+            >
+              <img
+                src={field.value}
+                alt={`${label} preview`}
                 className="h-full w-full object-cover"
               />
             </div>
           )}
         </div>
       </div>
-      <FormDescription>
-        {description}
-      </FormDescription>
+      <FormDescription>{description}</FormDescription>
       <FormMessage />
     </FormItem>
   );

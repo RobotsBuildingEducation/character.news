@@ -5,14 +5,14 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createHead, UnheadProvider } from "@unhead/react/client";
 import { InferSeoMetaPlugin } from "@unhead/addons";
 import { Suspense } from "react";
-import NostrProvider from "@/components/NostrProvider";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import NostrProvider from "~/components/NostrProvider";
+import { Toaster } from "~/components/ui/toaster";
+import { Toaster as Sonner } from "~/components/ui/sonner";
+import { TooltipProvider } from "~/components/ui/tooltip";
 import { NostrLoginProvider } from "@nostrify/react/login";
-import { AppProvider } from "@/components/AppProvider";
-import { AppConfig } from "@/contexts/AppContext";
-import HeaderActions from "@/components/HeaderActions";
+import { AppProvider } from "~/components/AppProvider";
+import { AppConfig } from "~/contexts/AppContext";
+import HeaderActions from "~/components/HeaderActions";
 import AppRouter from "./AppRouter";
 
 const head = createHead({

@@ -3,22 +3,22 @@
 
 import React, { useRef, useState } from "react";
 import { Shield, Upload } from "lucide-react";
-import { Button } from "@/components/ui/button.tsx";
-import { Input } from "@/components/ui/input.tsx";
+import { Button } from "~/components/ui/button.tsx";
+import { Input } from "~/components/ui/input.tsx";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog.tsx";
+} from "~/components/ui/dialog.tsx";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/components/ui/tabs.tsx";
-import { useLoginActions } from "@/hooks/useLoginActions";
+} from "~/components/ui/tabs.tsx";
+import { useLoginActions } from "~/hooks/useLoginActions";
 
 interface LoginDialogProps {
   isOpen: boolean;

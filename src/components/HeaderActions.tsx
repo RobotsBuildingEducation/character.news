@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Download } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { LoginArea } from "@/components/auth/LoginArea";
+import { Download, Wallet as WalletIcon } from "lucide-react";
+import { Button } from "~/components/ui/button";
+import { cn } from "~/lib/utils";
+import { LoginArea } from "~/components/auth/LoginArea";
 import DownloadAppModal from "./DownloadAppModal";
-import { Wallet } from "./Wallet";
+import WalletDialog from "./WalletDialog";
+import { useLoggedInAccounts } from "~/hooks/useLoggedInAccounts";
 
 interface HeaderActionsProps {
   className?: string;
@@ -12,6 +13,8 @@ interface HeaderActionsProps {
 
 export default function HeaderActions({ className }: HeaderActionsProps) {
   const [open, setOpen] = useState(false);
+  const [walletOpen, setWalletOpen] = useState(false);
+  const { currentUser } = useLoggedInAccounts();
 
   return (
     <div
@@ -27,9 +30,21 @@ export default function HeaderActions({ className }: HeaderActionsProps) {
         <Download className="w-4 h-4" />
       </Button>
       <LoginArea className="max-w-60" />
-      <Wallet />
+      {currentUser && (
+        <Button
+          className="flex items-center gap-2 px-4 py-2  bg-primary text-primary-foreground w-full font-medium transition-all hover:bg-primary/90 animate-scale-in"
+          size="icon"
+          onClick={() => setWalletOpen(true)}
+          style={{ backgroundColor: "#bdbdbd", color: "black" }}
+        >
+          <WalletIcon className="w-4 h-4" />
+        </Button>
+      )}
 
       <DownloadAppModal open={open} onOpenChange={setOpen} />
+      {currentUser && (
+        <WalletDialog open={walletOpen} onOpenChange={setWalletOpen} />
+      )}
     </div>
   );
 }

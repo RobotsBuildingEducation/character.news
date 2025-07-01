@@ -41,7 +41,7 @@ This project is a Nostr client application built with React 18.x, TailwindCSS 3.
 
 ## UI Components
 
-The project uses shadcn/ui components located in `@/components/ui`. These are unstyled, accessible components built with Radix UI and styled with Tailwind CSS. Available components include:
+The project uses shadcn/ui components located in `~/components/ui`. These are unstyled, accessible components built with Radix UI and styled with Tailwind CSS. Available components include:
 
 - **Accordion**: Vertically collapsing content panels
 - **Alert**: Displays important messages to users
@@ -428,8 +428,8 @@ To display profile data for a user by their Nostr pubkey (such as an event autho
 
 ```tsx
 import type { NostrEvent, NostrMetadata } from "@nostrify/nostrify";
-import { useAuthor } from "@/hooks/useAuthor";
-import { genUserName } from "@/lib/genUserName";
+import { useAuthor } from "~/hooks/useAuthor";
+import { genUserName } from "~/lib/genUserName";
 
 function Post({ event }: { event: NostrEvent }) {
   const author = useAuthor(event.pubkey);
@@ -477,8 +477,8 @@ To publish events, use the `useNostrPublish` hook in this project. This hook aut
 ```tsx
 import { useState } from "react";
 
-import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { useNostrPublish } from "@/hooks/useNostrPublish";
+import { useCurrentUser } from "~/hooks/useCurrentUser";
+import { useNostrPublish } from "~/hooks/useNostrPublish";
 
 export function MyComponent() {
   const [data, setData] = useState<Record<string, string>>({});
@@ -509,7 +509,7 @@ The `useCurrentUser` hook should be used to ensure that the user is logged in be
 To enable login with Nostr, simply use the `LoginArea` component already included in this project.
 
 ```tsx
-import { LoginArea } from "@/components/auth/LoginArea";
+import { LoginArea } from "~/components/auth/LoginArea";
 
 function MyComponent() {
   return (
@@ -601,7 +601,7 @@ if (decoded.type === "naddr" && decoded.data.kind === 30024) {
 To include an Edit Profile form, place the `EditProfileForm` component in the project:
 
 ```tsx
-import { EditProfileForm } from "@/components/EditProfileForm";
+import { EditProfileForm } from "~/components/EditProfileForm";
 
 function EditProfilePage() {
   return (
@@ -621,7 +621,7 @@ The `EditProfileForm` component displays just the form. It requires no props, an
 Use the `useUploadFile` hook to upload files. This hook uses Blossom servers for file storage and returns NIP-94 compatible tags.
 
 ```tsx
-import { useUploadFile } from "@/hooks/useUploadFile";
+import { useUploadFile } from "~/hooks/useUploadFile";
 
 function MyComponent() {
   const { mutateAsync: uploadFile, isPending: isUploading } = useUploadFile();
@@ -669,7 +669,7 @@ const decrypted = await user.signer.nip44.decrypt(user.pubkey, encrypted); // "h
 Nostr text notes (kind 1, 11, and 1111) have a plaintext `content` field that may contain URLs, hashtags, and Nostr URIs. These events should render their content using the `NoteContent` component:
 
 ```tsx
-import { NoteContent } from "@/components/NoteContent";
+import { NoteContent } from "~/components/NoteContent";
 
 export function Post(/* ...props */) {
   // ...
@@ -715,7 +715,7 @@ The router includes automatic scroll-to-top functionality and a 404 NotFound pag
 
 - Uses React Query for data fetching and caching
 - Follows shadcn/ui component patterns
-- Implements Path Aliases with `@/` prefix for cleaner imports
+- Implements Path Aliases with `~/` prefix for cleaner imports
 - Uses Vite for fast development and production builds
 - Component-based architecture with React hooks
 - Default connection to one Nostr relay for best performance
@@ -752,8 +752,8 @@ The router includes automatic scroll-to-top functionality and a 404 NotFound pag
 When no content is found (empty search results, no data available, etc.), display a minimalist empty state with the `RelaySelector` component. This allows users to easily switch relays to discover content from different sources.
 
 ```tsx
-import { RelaySelector } from "@/components/RelaySelector";
-import { Card, CardContent } from "@/components/ui/card";
+import { RelaySelector } from "~/components/RelaySelector";
+import { Card, CardContent } from "~/components/ui/card";
 
 // Empty state example
 <div className="col-span-full">
@@ -864,7 +864,7 @@ The project includes a `TestApp` component that provides all necessary context p
 ```tsx
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { TestApp } from "@/test/TestApp";
+import { TestApp } from "~/test/TestApp";
 import { MyComponent } from "./MyComponent";
 
 describe("MyComponent", () => {
