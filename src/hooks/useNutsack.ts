@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState, useEffect } from "react";
 import { useLocalStorage } from "./useLocalStorage";
-import NDK, { NDKZapper, NDKUser, NDKNip07Signer } from "@nostr-dev-kit/ndk";
+import NDK, { NDKZapper, NDKUser, NDKPrivateKeySigner } from "@nostr-dev-kit/ndk";
+import { nip19 } from "nostr-tools";
 import { NDKCashuWallet } from "@nostr-dev-kit/ndk-wallet";
 import { useCurrentUser } from "./useCurrentUser";
 
@@ -17,6 +18,19 @@ export function useNutsack() {
   const walletRef = useRef<NDKCashuWallet>();
   const { user } = useCurrentUser();
 
+  const getPrivateKey = useCallback((signer: any): string | undefined => {
+    const sk = signer?.privateKey ?? signer?.secretKey;
+    if (sk) return sk;
+    const nsec = signer?.nsec;
+    if (!nsec) return undefined;
+    try {
+      const data = nip19.decode(nsec).data as Uint8Array;
+      return Buffer.from(data).toString("hex");
+    } catch {
+      return undefined;
+    }
+  }, []);
+
   /**
    * Request an invoice from the wallet for the given amount. The returned
    * invoice string can be rendered as a QR code by the caller. For simplicity
@@ -24,13 +38,15 @@ export function useNutsack() {
    */
   const init = useCallback(async () => {
     if (!ndkRef.current) {
+      const sk = user ? getPrivateKey(user.signer) : undefined;
       ndkRef.current = new NDK({
         explicitRelayUrls: ["wss://relay.damus.io", "wss://relay.primal.net"],
-        signer: user ? new NDKNip07Signer(user.signer as any) : undefined,
+        signer: sk ? new NDKPrivateKeySigner(sk) : undefined,
       });
       await ndkRef.current.connect();
     } else if (user && !ndkRef.current.signer) {
-      ndkRef.current.signer = new NDKNip07Signer(user.signer as any);
+      const sk = getPrivateKey(user.signer);
+      if (sk) ndkRef.current.signer = new NDKPrivateKeySigner(sk);
     }
     if (!walletRef.current) {
       walletRef.current = new NDKCashuWallet(ndkRef.current);
