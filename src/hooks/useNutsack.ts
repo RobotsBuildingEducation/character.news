@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, useEffect } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useLocalStorage } from "./useLocalStorage";
 import NDK, {
   NDKZapper,
@@ -18,6 +18,7 @@ import { useCurrentUser } from "./useCurrentUser";
 export function useNutsack() {
   const [balance, setBalance] = useLocalStorage<number>("nutsack:balance", 0);
   const [invoice, setInvoice] = useState<string>("");
+  const [walletReady, setWalletReady] = useState(false);
   const ndkRef = useRef<NDK>();
   const walletRef = useRef<NDKCashuWallet>();
   const { user } = useCurrentUser();
@@ -45,12 +46,14 @@ export function useNutsack() {
       const sk = user ? getPrivateKey(user.signer) : undefined;
       ndkRef.current = new NDK({
         explicitRelayUrls: ["wss://relay.damus.io", "wss://relay.primal.net"],
-        signer: sk ? new NDKPrivateKeySigner(sk) : undefined,
+        signer: sk ? new NDKPrivateKeySigner(sk) : (user?.signer as any),
       });
       await ndkRef.current.connect();
     } else if (user && !ndkRef.current.signer) {
       const sk = getPrivateKey(user.signer);
-      if (sk) ndkRef.current.signer = new NDKPrivateKeySigner(sk);
+      ndkRef.current.signer = sk
+        ? new NDKPrivateKeySigner(sk)
+        : ((user.signer as unknown) as any);
     }
     if (!walletRef.current) {
       walletRef.current = new NDKCashuWallet(ndkRef.current);
@@ -63,17 +66,12 @@ export function useNutsack() {
         setBalance(amt);
       });
     }
+    setWalletReady(true);
   }, [setBalance, user]);
-
-  useEffect(() => {
-    if (user) {
-      void init();
-    }
-  }, [user, init]);
 
   const deposit = useCallback(
     async (amount: number) => {
-      // await init();
+      await init();
       if (!walletRef.current) return;
       const dep = walletRef.current.deposit(amount, walletRef.current.mints[0]);
       const inv: string = await dep.start();
@@ -107,5 +105,9 @@ export function useNutsack() {
     [init, setBalance]
   );
 
-  return { balance, invoice, deposit, zap };
+  const createWallet = useCallback(async () => {
+    await init();
+  }, [init]);
+
+  return { balance, invoice, deposit, zap, createWallet, walletReady };
 }
