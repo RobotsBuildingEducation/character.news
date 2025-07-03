@@ -24,3 +24,10 @@ export function useSendNutzap() {
     });
   };
 }
+
+export function useFetchNutzapInfo() {
+  const fetchNutzapInfo = async (pubkey: string) => {
+    return Promise.resolve(undefined as any);
+  };
+  return { fetchNutzapInfo };
+}
