@@ -28,10 +28,7 @@ export function useNutsack() {
   const getPrivateKey = useCallback((signer: any): string | undefined => {
     if (!signer) return undefined;
     const sk =
-      signer.privateKey ||
-      signer.secretKey ||
-      signer.privkey ||
-      signer.sk;
+      signer.privateKey || signer.secretKey || signer.privkey || signer.sk;
     if (sk) return sk as string;
 
     const nsec = signer.nsec;
