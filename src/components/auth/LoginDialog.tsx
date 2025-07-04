@@ -18,7 +18,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "~/components/ui/tabs.tsx";
-import { useLoginActions } from "~/hooks/useLoginActions";
+import { useNostrCashuManager } from "~/hooks/useNostrCashuManager";
 
 interface LoginDialogProps {
   isOpen: boolean;
@@ -37,7 +37,7 @@ const LoginDialog: React.FC<LoginDialogProps> = ({
   const [nsec, setNsec] = useState("");
   const [bunkerUri, setBunkerUri] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const login = useLoginActions();
+  const { loginActions: login } = useNostrCashuManager();
 
   const handleExtensionLogin = () => {
     setIsLoading(true);

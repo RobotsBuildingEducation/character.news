@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from "~/components/ui/dialog.tsx";
 import { toast } from "~/hooks/useToast.ts";
-import { useLoginActions } from "~/hooks/useLoginActions";
+import { useNostrCashuManager } from "~/hooks/useNostrCashuManager";
 import { generateSecretKey, nip19 } from "nostr-tools";
 
 interface SignupDialogProps {
@@ -26,7 +26,7 @@ const SignupDialog: React.FC<SignupDialogProps> = ({ isOpen, onClose }) => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [nsec, setNsec] = useState("");
-  const login = useLoginActions();
+  const { loginActions: login } = useNostrCashuManager();
 
   // Generate a proper nsec key using nostr-tools
   const generateKey = () => {
