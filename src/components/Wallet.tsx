@@ -24,7 +24,7 @@ export function Wallet() {
     const adminPubkey = nip19.decode(ADMIN_NPUB).data as string;
     try {
       await sendZap(adminPubkey, "", {}, undefined);
-      await zap(adminPubkey, 1);
+      await zap(adminPubkey, 10);
     } catch (error) {
       console.error("Failed to zap admin", error);
     }

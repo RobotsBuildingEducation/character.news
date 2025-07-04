@@ -3,6 +3,7 @@ import { useLocalStorage } from "./useLocalStorage";
 import NDK, {
   NDKZapper,
   NDKPrivateKeySigner,
+  NDKUser,
 } from "@nostr-dev-kit/ndk";
 import { nip19 } from "nostr-tools";
 import { NDKCashuWallet } from "@nostr-dev-kit/ndk-wallet";
@@ -23,15 +24,12 @@ export function useNutsack() {
   const walletRef = useRef<NDKCashuWallet>();
   const { user } = useCurrentUser();
 
-  console.log("user", user);
+  // console.log("user", user);
 
   const getPrivateKey = useCallback((signer: any): string | undefined => {
     if (!signer) return undefined;
     const sk =
-      signer.privateKey ||
-      signer.secretKey ||
-      signer.privkey ||
-      signer.sk;
+      signer.privateKey || signer.secretKey || signer.privkey || signer.sk;
     if (sk) return sk as string;
 
     const nsec = signer.nsec;
@@ -64,7 +62,8 @@ export function useNutsack() {
         explicitRelayUrls: ["wss://relay.damus.io", "wss://relay.primal.net"],
         signer: signer as any,
       });
-      if (signer instanceof NostrifySignerAdapter) signer.setNdk(ndkRef.current);
+      if (signer instanceof NostrifySignerAdapter)
+        signer.setNdk(ndkRef.current);
       await ndkRef.current.connect();
     } else if (user && !ndkRef.current.signer) {
       const sk = getPrivateKey(user.signer);
@@ -75,7 +74,7 @@ export function useNutsack() {
     if (!walletRef.current) {
       walletRef.current = new NDKCashuWallet(ndkRef.current);
       walletRef.current.mints = ["https://mint.minibits.cash/Bitcoin"];
-      walletRef.current.walletId = "Character News Wallet";
+      walletRef.current.walletId = "Robots Building Education Wallet";
       await walletRef.current.getP2pk();
       walletRef.current.start({ since: Date.now() });
       walletRef.current.on("balance_updated", (wb) => {
@@ -114,8 +113,15 @@ export function useNutsack() {
       await init();
       if (!walletRef.current || !ndkRef.current) return;
       ndkRef.current.wallet = walletRef.current;
-      const user = ndkRef.current.getUser({ pubkey: recipientNpub });
-      const zapper = new NDKZapper(user, amount, "sat");
+      // const user = ndkRef.current.getUser({ pubkey: recipientNpub });
+      console.log("ndkref", ndkRef);
+      const user = await NDKUser.fromNip05(
+        "sheilfer@primal.net",
+        ndkRef.current
+      );
+
+      console.log("user", user);
+      const zapper = new NDKZapper(user, 1, "sat", { comment: "test" });
       await zapper.zap();
       setBalance(walletRef.current.balance?.amount ?? 0);
     },
