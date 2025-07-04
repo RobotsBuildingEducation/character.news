@@ -157,12 +157,12 @@ export function useNostrCashuManager() {
       await new Promise(r => setTimeout(r, 3000))
     }
     const proofs = await cw.mintProofs(amount, quoteId)
-    setWallet(w => (w ? { ...w, proofs: [...w.proofs, ...proofs] } : w))
-    if (user)
-      localStorage.setItem(
-        'cashu-' + user.pubkey,
-        JSON.stringify({ ...wallet!, proofs: [...wallet!.proofs, ...proofs] })
-      )
+    if (!wallet) return proofs
+    const updated = { ...wallet, proofs: [...wallet.proofs, ...proofs] }
+    setWallet(updated)
+    if (user) {
+      localStorage.setItem('cashu-' + user.pubkey, JSON.stringify(updated))
+    }
     return proofs
   }
 
@@ -222,12 +222,11 @@ export function useNostrCashuManager() {
       pubkey: p2pkPubkey,
       privkey: wallet.privkey
     })
-    setWallet(w => (w ? { ...w, proofs: keep } : w))
-    if (user)
-      localStorage.setItem(
-        'cashu-' + user.pubkey,
-        JSON.stringify({ ...wallet!, proofs: keep })
-      )
+    const updated = { ...wallet, proofs: keep }
+    setWallet(updated)
+    if (user) {
+      localStorage.setItem('cashu-' + user.pubkey, JSON.stringify(updated))
+    }
     return send
   }
 
