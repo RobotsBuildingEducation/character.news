@@ -82,19 +82,21 @@ export function useNutsack() {
     [setBalance]
   );
 
-  const loadExistingWallet = useCallback(async () => {
-    if (!user) return;
-    await ensureNdk();
-    if (!ndkRef.current) return;
-    const existing = await ndkRef.current.fetchEvent({
-      kinds: [17375],
-      authors: [user.pubkey],
-    });
-    if (existing) {
-      const w = await NDKCashuWallet.from(existing);
-      if (w) startWallet(w);
-    }
-  }, [ensureNdk, startWallet, user]);
+  const loadExistingWallet = useCallback(
+    async (pubkey: string) => {
+      await ensureNdk();
+      if (!ndkRef.current) return;
+      const existing = await ndkRef.current.fetchEvent({
+        kinds: [17375],
+        authors: [pubkey],
+      });
+      if (existing) {
+        const w = await NDKCashuWallet.from(existing);
+        if (w) startWallet(w);
+      }
+    },
+    [ensureNdk, startWallet]
+  );
 
   const createWallet = useCallback(async () => {
     await ensureNdk();
@@ -108,8 +110,10 @@ export function useNutsack() {
   }, [ensureNdk, startWallet]);
 
   useEffect(() => {
-    loadExistingWallet();
-  }, [loadExistingWallet]);
+    if (user) {
+      loadExistingWallet(user.pubkey);
+    }
+  }, [loadExistingWallet, user?.pubkey]);
 
   const deposit = useCallback(
     async (amount: number) => {
