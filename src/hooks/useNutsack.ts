@@ -125,6 +125,7 @@ export function useNutsack() {
       setInvoice(inv);
       dep.on("success", () => {
         setBalance(walletRef.current?.balance?.amount ?? 0);
+        setInvoice("");
       });
       return inv;
     },

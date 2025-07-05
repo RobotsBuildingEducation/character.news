@@ -8,6 +8,8 @@ import { ADMIN_NPUB } from "~/constants";
 import { nip19 } from "nostr-tools";
 import { QRCodeSVG } from "qrcode.react";
 import { useCurrentUser } from "~/hooks/useCurrentUser";
+import { Copy, RotateCcw } from "lucide-react";
+import { toast } from "~/hooks/useToast";
 
 export function Wallet() {
   const { balance, invoice, deposit, zap, createWallet, walletReady } =
@@ -39,6 +41,20 @@ export function Wallet() {
     }
   };
 
+  const handleGenerate = async () => {
+    await handleDeposit();
+  };
+
+  const handleCopy = async () => {
+    if (!invoice) return;
+    try {
+      await navigator.clipboard.writeText(invoice);
+      toast({ title: "Address copied" });
+    } catch (err) {
+      toast({ title: "Failed to copy", variant: "destructive" });
+    }
+  };
+
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="text-sm">Balance: {balance}</div>
@@ -58,8 +74,24 @@ export function Wallet() {
       )}
       {depositing && <div className="text-xs">Generating invoice…</div>}
       {invoice && (
-        <div className="mt-2">
+        <div className="mt-2 flex flex-col items-center gap-2">
           <QRCodeSVG value={invoice} size={192} />
+          <Button
+            variant="secondary"
+            size="sm"
+            className="flex items-center gap-1"
+            onClick={handleGenerate}
+          >
+            <RotateCcw className="w-4 h-4" /> Generate new address
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-1"
+            onClick={handleCopy}
+          >
+            <Copy className="w-4 h-4" /> Copy address
+          </Button>
         </div>
       )}
     </div>
