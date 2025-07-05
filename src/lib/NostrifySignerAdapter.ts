@@ -1,4 +1,5 @@
 import type { NostrSigner } from '@nostrify/nostrify';
+import type { NostrEvent } from '@jsr/nostrify__types';
 import NDK, { NDKUser, type NDKSigner, type NDKRelay, type NDKEncryptionScheme } from '@nostr-dev-kit/ndk';
 
 /**
@@ -44,7 +45,7 @@ export class NostrifySignerAdapter implements NDKSigner {
     return this._user;
   }
 
-  async sign(event: any): Promise<string> {
+  async sign(event: NostrEvent): Promise<string> {
     const signed = await this.signer.signEvent(event);
     return signed.sig;
   }

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocalStorage } from "./useLocalStorage";
 import NDK, {
   NDKZapper,
@@ -30,11 +30,11 @@ export function useNutsack() {
 
   const getPrivateKey = useCallback((signer: unknown): string | undefined => {
     if (!signer) return undefined;
-    const s = signer as Record<string, any>;
+    const s = signer as Record<string, unknown>;
     const sk = s.privateKey || s.secretKey || s.privkey || s.sk;
     if (sk) return sk as string;
 
-    const nsec = (s as Record<string, any>).nsec;
+    const nsec = (s as Record<string, unknown>).nsec as string | undefined;
     if (!nsec) return undefined;
 
     try {
@@ -45,66 +45,76 @@ export function useNutsack() {
     }
   }, []);
 
-  /**
-   * Request an invoice from the wallet for the given amount. The returned
-   * invoice string can be rendered as a QR code by the caller. For simplicity
-   * we store the last invoice in state so components can react to it.
-   */
-  const init = useCallback(async () => {
-    if (!ndkRef.current) {
-      const sk = user ? getPrivateKey(user.signer) : undefined;
-      console.log("Private", sk);
-      let signer;
-      if (sk) {
-        signer = new NDKPrivateKeySigner(sk);
-      } else if (user?.signer) {
-        signer = new NostrifySignerAdapter(user.signer as NostrSigner);
+  const ensureNdk = useCallback(async () => {
+    if (ndkRef.current) {
+      if (user && !ndkRef.current.signer) {
+        const sk = getPrivateKey(user.signer);
+        ndkRef.current.signer = sk
+          ? new NDKPrivateKeySigner(sk)
+          : new NostrifySignerAdapter(user.signer as NostrSigner, ndkRef.current);
       }
-      ndkRef.current = new NDK({
-        explicitRelayUrls: ["wss://relay.damus.io", "wss://relay.primal.net"],
-        signer: signer as unknown as NDKSigner,
-      });
-      if (signer instanceof NostrifySignerAdapter)
-        signer.setNdk(ndkRef.current);
-      await ndkRef.current.connect();
-    } else if (user && !ndkRef.current.signer) {
-      const sk = getPrivateKey(user.signer);
-      ndkRef.current.signer = sk
-        ? new NDKPrivateKeySigner(sk)
-        : new NostrifySignerAdapter(
-            user.signer as NostrSigner,
-            ndkRef.current
-          );
+      return;
     }
-    if (!walletRef.current) {
-      const existing = await ndkRef.current.fetchEvent({
-        kinds: [17375],
-        authors: user ? [user.pubkey] : [],
-      });
-      if (existing) {
-        const w = await NDKCashuWallet.from(existing);
-        if (w) walletRef.current = w;
-      }
-      if (!walletRef.current) {
-        walletRef.current = new NDKCashuWallet(ndkRef.current);
-        walletRef.current.mints = ["https://mint.minibits.cash/Bitcoin"];
-        walletRef.current.walletId = "Robots Building Education Wallet";
-        await walletRef.current.getP2pk();
-        await walletRef.current.publish();
-      }
-      const wallet = walletRef.current;
+
+    const sk = user ? getPrivateKey(user.signer) : undefined;
+    let signer: NDKSigner | undefined;
+    if (sk) signer = new NDKPrivateKeySigner(sk);
+    else if (user?.signer) signer = new NostrifySignerAdapter(user.signer as NostrSigner);
+
+    ndkRef.current = new NDK({
+      explicitRelayUrls: ["wss://relay.damus.io", "wss://relay.primal.net"],
+      signer,
+    });
+    if (signer instanceof NostrifySignerAdapter) signer.setNdk(ndkRef.current);
+    await ndkRef.current.connect();
+  }, [getPrivateKey, user]);
+
+  const startWallet = useCallback(
+    (wallet: NDKCashuWallet) => {
+      walletRef.current = wallet;
       wallet.start();
       wallet.on("balance_updated", (wb) => {
         const amt = wb?.amount ?? wallet.balance?.amount ?? 0;
         setBalance(amt);
       });
+      setBalance(wallet.balance?.amount ?? 0);
+      setWalletReady(true);
+    },
+    [setBalance]
+  );
+
+  const loadExistingWallet = useCallback(async () => {
+    if (!user) return;
+    await ensureNdk();
+    if (!ndkRef.current) return;
+    const existing = await ndkRef.current.fetchEvent({
+      kinds: [17375],
+      authors: [user.pubkey],
+    });
+    if (existing) {
+      const w = await NDKCashuWallet.from(existing);
+      if (w) startWallet(w);
     }
-    setWalletReady(true);
-  }, [setBalance, user]);
+  }, [ensureNdk, startWallet, user]);
+
+  const createWallet = useCallback(async () => {
+    await ensureNdk();
+    if (!ndkRef.current || walletRef.current) return;
+    const wallet = new NDKCashuWallet(ndkRef.current);
+    wallet.mints = ["https://mint.minibits.cash/Bitcoin"];
+    wallet.walletId = "Robots Building Education Wallet";
+    await wallet.getP2pk();
+    await wallet.publish();
+    startWallet(wallet);
+  }, [ensureNdk, startWallet]);
+
+  useEffect(() => {
+    loadExistingWallet();
+  }, [loadExistingWallet]);
 
   const deposit = useCallback(
     async (amount: number) => {
-      await init();
+      await ensureNdk();
       if (!walletRef.current) return;
       const dep = walletRef.current.deposit(amount, walletRef.current.mints[0]);
       const inv: string = await dep.start();
@@ -114,11 +124,7 @@ export function useNutsack() {
       });
       return inv;
     },
-    [
-      // init
-      // ,
-      setBalance,
-    ]
+    [ensureNdk, setBalance]
   );
 
   /**
@@ -127,7 +133,7 @@ export function useNutsack() {
    */
   const zap = useCallback(
     async (_recipientNpub: string, _amount: number) => {
-      await init();
+      await ensureNdk();
       if (!walletRef.current || !ndkRef.current) return;
       ndkRef.current.wallet = walletRef.current;
       // const user = ndkRef.current.getUser({ pubkey: recipientNpub });
@@ -143,12 +149,9 @@ export function useNutsack() {
       await zapper.zap();
       setBalance(walletRef.current.balance?.amount ?? 0);
     },
-    [init, setBalance]
+    [ensureNdk, setBalance]
   );
 
-  const createWallet = useCallback(async () => {
-    await init();
-  }, [init]);
 
   return { balance, invoice, deposit, zap, createWallet, walletReady };
 }
