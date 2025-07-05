@@ -58,7 +58,8 @@ export function useNutsack() {
     const sk = user ? getPrivateKey(user.signer) : undefined;
     let signer: NDKSigner | undefined;
     if (sk) signer = new NDKPrivateKeySigner(sk);
-    else if (user?.signer) signer = new NostrifySignerAdapter(user.signer as any);
+    else if (user?.signer)
+      signer = new NostrifySignerAdapter(user.signer as any);
 
     ndkRef.current = new NDK({
       explicitRelayUrls: ["wss://relay.damus.io", "wss://relay.primal.net"],
@@ -110,7 +111,7 @@ export function useNutsack() {
   }, [ensureNdk, startWallet]);
 
   useEffect(() => {
-    if (user) {
+    if (user && !walletRef.current) {
       loadExistingWallet(user.pubkey);
     }
   }, [loadExistingWallet, user?.pubkey]);
