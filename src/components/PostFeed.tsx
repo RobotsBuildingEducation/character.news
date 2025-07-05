@@ -70,7 +70,7 @@ function PostItem({ event }: PostItemProps) {
         <AccordionTrigger>{parseEvent(event).header}</AccordionTrigger>
         <AccordionContent>
           <NoteContent event={event} />
-          {filteredReplies.map((r, _index) => (
+          {filteredReplies.map((r, index) => (
             <div
               key={r.id}
               className="pt-4 border-l pl-4"
@@ -124,8 +124,8 @@ export function PostFeed() {
   // let xr = events.reverse();
   return (
     <div className="space-y-4">
-      {events.map((e, _index) => {
-        if (_index === events.length - 1) {
+      {events.map((e, index) => {
+        if (index === events.length - 1) {
           return;
         }
         return <PostItem key={e.id} event={e} />;

@@ -4,7 +4,7 @@ import { AdminPostForm } from "~/components/AdminPostForm";
 import { AdminCharacterForm } from "~/components/AdminCharacterForm";
 import { AdminCharacterPostEditor } from "~/components/AdminCharacterPostEditor";
 import { useNutsack } from "~/hooks/useNutsack";
-import { Button as _Button } from "~/components/ui/button";
+import { Button } from "~/components/ui/button";
 import { PostFeed } from "~/components/PostFeed";
 import { Link } from "react-router-dom";
 
@@ -15,7 +15,7 @@ const Index = () => {
   });
 
   const isAdmin = useIsAdmin();
-  const { balance: _balance, deposit: _deposit, zap: _zap } = useNutsack();
+  const { balance, deposit, zap } = useNutsack();
 
   return (
     <div

@@ -41,7 +41,6 @@ export function AdminArticleForm() {
       setDatetime("");
       setContent("");
     } catch (err) {
-      console.error(err);
       toast({ title: "Failed to post", variant: "destructive" });
     }
   };

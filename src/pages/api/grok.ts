@@ -1,16 +1,11 @@
 // pages/api/grok.ts
-// Minimal typings to avoid requiring Next.js types
-type NextApiRequest = { body?: Record<string, unknown> };
-type NextApiResponse = {
-  status: (code: number) => NextApiResponse;
-  json: (data: unknown) => void;
-};
+import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { prompt } = req.body as Record<string, string>;
+  const { prompt } = req.body;
   const key = process.env.XAI_API_KEY;
   if (!key) return res.status(500).json({ error: "Key not configured" });
 

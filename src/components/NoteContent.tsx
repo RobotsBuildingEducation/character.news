@@ -127,7 +127,11 @@ export function NoteContent({ event, className }: NoteContentProps) {
       )}
       {character && <p className="font-bold text-sm">{character}</p>}
       <div>
-        {body.length > 0 ? <>{body[0]}</> : <Markdown>{text}</Markdown>}
+        {body.length > 0 ? (
+          <Markdown children={body[0]} />
+        ) : (
+          <Markdown children={text} />
+        )}
       </div>
     </div>
   );
@@ -137,7 +141,7 @@ export function NoteContent({ event, className }: NoteContentProps) {
 function NostrMention({ pubkey }: { pubkey: string }) {
   const author = useAuthor(pubkey);
   const npub = nip19.npubEncode(pubkey);
-  const _hasRealName = !!author.data?.metadata?.name;
+  const hasRealName = !!author.data?.metadata?.name;
   const displayName = author.data?.metadata?.name ?? genUserName(pubkey);
 
   return (

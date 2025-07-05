@@ -10,7 +10,6 @@ import { nip19 } from "nostr-tools";
 import { NDKCashuWallet } from "@nostr-dev-kit/ndk-wallet";
 import { useCurrentUser } from "./useCurrentUser";
 import { NostrifySignerAdapter } from "~/lib/NostrifySignerAdapter";
-import type { NostrSigner } from "@nostrify/nostrify";
 
 /**
  * Thin wrapper around the NDKCashuWallet API. The actual wallet
@@ -51,7 +50,7 @@ export function useNutsack() {
         const sk = getPrivateKey(user.signer);
         ndkRef.current.signer = sk
           ? new NDKPrivateKeySigner(sk)
-          : new NostrifySignerAdapter(user.signer as NostrSigner, ndkRef.current);
+          : new NostrifySignerAdapter(user.signer as any, ndkRef.current);
       }
       return;
     }
@@ -59,7 +58,7 @@ export function useNutsack() {
     const sk = user ? getPrivateKey(user.signer) : undefined;
     let signer: NDKSigner | undefined;
     if (sk) signer = new NDKPrivateKeySigner(sk);
-    else if (user?.signer) signer = new NostrifySignerAdapter(user.signer as NostrSigner);
+    else if (user?.signer) signer = new NostrifySignerAdapter(user.signer as any);
 
     ndkRef.current = new NDK({
       explicitRelayUrls: ["wss://relay.damus.io", "wss://relay.primal.net"],
@@ -132,7 +131,7 @@ export function useNutsack() {
    * decreased. Any errors are bubbled up to the caller.
    */
   const zap = useCallback(
-    async (_recipientNpub: string, _amount: number) => {
+    async (recipientNpub: string, amount: number) => {
       await ensureNdk();
       if (!walletRef.current || !ndkRef.current) return;
       ndkRef.current.wallet = walletRef.current;
@@ -142,7 +141,6 @@ export function useNutsack() {
         "sheilfer@primal.net",
         ndkRef.current
       );
-      if (!user) return;
 
       console.log("user", user);
       const zapper = new NDKZapper(user, 1, "sat", { comment: "test" });
@@ -151,7 +149,6 @@ export function useNutsack() {
     },
     [ensureNdk, setBalance]
   );
-
 
   return { balance, invoice, deposit, zap, createWallet, walletReady };
 }
