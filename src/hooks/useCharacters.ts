@@ -17,7 +17,7 @@ const colRef = collection(db, "characters");
 export function useCharacters() {
   const queryClient = useQueryClient();
 
-  const historian = (() => {
+  const _historian = (() => {
     const sk = nip19.decode(HISTORIAN_NSEC).data as Uint8Array;
     const pk = getPublicKey(sk);
     return {
@@ -46,7 +46,8 @@ export function useCharacters() {
       const npub = nip19.npubEncode(pk);
       await addDoc(colRef, { name, prompt, nsec, npub });
     },
-    onSuccess: () => queryClient.invalidateQueries(["characters"]),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["characters"] }),
   });
 
   return {

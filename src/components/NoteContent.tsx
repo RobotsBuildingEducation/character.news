@@ -127,11 +127,7 @@ export function NoteContent({ event, className }: NoteContentProps) {
       )}
       {character && <p className="font-bold text-sm">{character}</p>}
       <div>
-        {body.length > 0 ? (
-          <Markdown children={body[0]} />
-        ) : (
-          <Markdown children={text} />
-        )}
+        {body.length > 0 ? <>{body[0]}</> : <Markdown>{text}</Markdown>}
       </div>
     </div>
   );
