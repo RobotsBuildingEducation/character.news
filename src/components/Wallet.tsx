@@ -12,8 +12,15 @@ import { Copy, RotateCcw, Loader2 } from "lucide-react";
 import { toast } from "~/hooks/useToast";
 
 export function Wallet() {
-  const { balance, invoice, deposit, zap, createWallet, walletReady } =
-    useNutsack();
+  const {
+    balance,
+    invoice,
+    deposit,
+    zap,
+    createWallet,
+    walletReady,
+    loadingWallet,
+  } = useNutsack();
   const isAdmin = useIsAdmin();
   const { data } = useUserWallet();
   const sendZap = useSendNutzap();
@@ -22,6 +29,7 @@ export function Wallet() {
   const [zapping, setZapping] = useState(false);
 
   if (!user) return null;
+  if (loadingWallet) return <div className="text-sm">Loading wallet…</div>;
 
   const handleZap = async () => {
     const adminPubkey = nip19.decode(ADMIN_NPUB).data as string;
@@ -55,18 +63,23 @@ export function Wallet() {
       await navigator.clipboard.writeText(invoice);
       toast({ title: "Address copied" });
     } catch (err) {
+      console.error(err);
       toast({ title: "Failed to copy", variant: "destructive" });
     }
   };
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <div className="text-sm">Balance: {balance}</div>
-      {/* Display token count from wallet query if available */}
-      {data?.tokens && (
-        <div className="text-xs text-muted-foreground">
-          Tokens: {data.tokens.length}
-        </div>
+      {walletReady && (
+        <>
+          <div className="text-sm">Balance: {balance}</div>
+          {/* Display token count from wallet query if available */}
+          {data?.tokens && (
+            <div className="text-xs text-muted-foreground">
+              Tokens: {data.tokens.length}
+            </div>
+          )}
+        </>
       )}
       {!walletReady ? (
         <Button onClick={createWallet}>Create Wallet</Button>
