@@ -79,7 +79,9 @@ export function useNutsack() {
         const amt = wb?.amount ?? wallet.balance?.amount ?? 0;
         setBalance(amt);
       });
-      setBalance(wallet.balance?.amount ?? 0);
+      if (wallet.balance?.amount !== undefined) {
+        setBalance(wallet.balance.amount);
+      }
       setWalletReady(true);
       setLoadingWallet(false);
     },
@@ -91,6 +93,10 @@ export function useNutsack() {
       setLoadingWallet(true);
       await ensureNdk();
       if (!ndkRef.current) {
+        setLoadingWallet(false);
+        return;
+      }
+      if (walletRef.current) {
         setLoadingWallet(false);
         return;
       }
