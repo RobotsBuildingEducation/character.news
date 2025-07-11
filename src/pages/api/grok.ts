@@ -1,10 +1,7 @@
 // pages/api/grok.ts
-import type { NextApiRequest, NextApiResponse } from "next";
-
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+interface ApiRequest { body: { prompt?: string } }
+interface ApiResponse { status: (code: number) => { json: (data: unknown) => void } }
+export default async function handler(req: ApiRequest, res: ApiResponse) {
   const { prompt } = req.body;
   const key = process.env.XAI_API_KEY;
   if (!key) return res.status(500).json({ error: "Key not configured" });

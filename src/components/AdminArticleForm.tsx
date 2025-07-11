@@ -40,7 +40,7 @@ export function AdminArticleForm() {
       setTitle("");
       setDatetime("");
       setContent("");
-    } catch (err) {
+    } catch (_err) {
       toast({ title: "Failed to post", variant: "destructive" });
     }
   };

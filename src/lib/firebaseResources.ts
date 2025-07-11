@@ -24,15 +24,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 if (window.location.hostname === "localhost") {
-  self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+  (self as unknown as Record<string, unknown>).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
 }
 // Initialize App Check with reCAPTCHA v3
-const appCheck = initializeAppCheck(app, {
+const _appCheck = initializeAppCheck(app, {
   provider: new ReCaptchaV3Provider("6LeQS2srAAAAAFFBhi8gCv5rcFy0XEwEccUIb69R"),
   isTokenAutoRefreshEnabled: true,
 });
 
-const analytics = getAnalytics(app);
+const _analytics = getAnalytics(app);
 const ai = getAI(app, { backend: new VertexAIBackend() });
 export const db = getFirestore(app);
 

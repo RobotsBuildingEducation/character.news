@@ -6,7 +6,6 @@ import './lib/polyfills.ts';
 import App from './App.tsx';
 import './index.css';
 
-// FIXME: a custom font should be used. Eg:
-// import '@fontsource-variable/<font-name>';
+// Custom fonts can be added by importing from '@fontsource-variable/<font-name>'
 
 createRoot(document.getElementById("root")!).render(<App />);
