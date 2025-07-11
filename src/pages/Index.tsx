@@ -4,9 +4,9 @@ import { AdminPostForm } from "~/components/AdminPostForm";
 import { AdminCharacterForm } from "~/components/AdminCharacterForm";
 import { AdminCharacterPostEditor } from "~/components/AdminCharacterPostEditor";
 import { useNutsack } from "~/hooks/useNutsack";
-import { Button } from "~/components/ui/button";
 import { PostFeed } from "~/components/PostFeed";
 import { Link } from "react-router-dom";
+import { useCurrentUser } from "~/hooks/useCurrentUser";
 
 const Index = () => {
   useSeoMeta({
@@ -15,7 +15,8 @@ const Index = () => {
   });
 
   const isAdmin = useIsAdmin();
-  const { balance, deposit, zap } = useNutsack();
+  useNutsack();
+  const { user } = useCurrentUser();
 
   return (
     <div
@@ -26,6 +27,11 @@ const Index = () => {
       <Link to="/about" className="text-sm">
         About
       </Link>
+      {user && (
+        <Link to="/saved" className="text-sm">
+          Saved Posts
+        </Link>
+      )}
       {/* <div className="text-center space-y-4">
         <p className="text-gray-800 dark:text-gray-200">Balance: {balance}</p>
         <Button onClick={() => deposit(1)}>Deposit 1</Button>

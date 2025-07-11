@@ -167,6 +167,7 @@ export function useNutsack() {
       );
 
       console.log("user", user);
+      if (!user) return;
       const zapper = new NDKZapper(user, 1, "sat", { comment: "test" });
       await zapper.zap();
       setBalance(walletRef.current.balance?.amount ?? 0);

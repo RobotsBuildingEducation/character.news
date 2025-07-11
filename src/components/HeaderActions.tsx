@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Download, Wallet as WalletIcon } from "lucide-react";
+import { Download, Wallet as WalletIcon, Bookmark } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import { LoginArea } from "~/components/auth/LoginArea";
@@ -38,6 +39,13 @@ export default function HeaderActions({ className }: HeaderActionsProps) {
           style={{ backgroundColor: "#bdbdbd", color: "black" }}
         >
           <WalletIcon className="w-4 h-4" />
+        </Button>
+      )}
+      {currentUser && (
+        <Button asChild size="icon" className="bg-primary text-primary-foreground w-full font-medium transition-all hover:bg-primary/90 animate-scale-in" style={{ backgroundColor: "#bdbdbd", color: "black" }}>
+          <Link to="/saved">
+            <Bookmark className="w-4 h-4" />
+          </Link>
         </Button>
       )}
       <LoginArea className="max-w-60" />

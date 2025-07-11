@@ -5,6 +5,10 @@ import { nip19 } from "nostr-tools";
 import { ADMIN_NPUB } from "~/constants";
 import { NoteContent } from "./NoteContent";
 import { useEffect, useMemo } from "react";
+import { Button } from "~/components/ui/button";
+import { useToast } from "~/hooks/useToast";
+import { useSavedPosts } from "~/hooks/useSavedPosts";
+import { useCurrentUser } from "~/hooks/useCurrentUser";
 import {
   Accordion,
   AccordionContent,
@@ -18,6 +22,9 @@ interface PostItemProps {
 
 function PostItem({ event }: PostItemProps) {
   const { nostr } = useNostr();
+  const { user } = useCurrentUser();
+  const { toast } = useToast();
+  const { savedPostIds, savePost, removePost } = useSavedPosts();
   const { data: replies = [] } = useQuery({
     queryKey: ["replies", event.id],
     queryFn: async ({ signal }) => {
@@ -64,13 +71,33 @@ function PostItem({ event }: PostItemProps) {
     return Array.from(map.values()).sort((a, b) => a.created_at - b.created_at);
   }, [replies]);
 
+  const isSaved = savedPostIds.includes(event.id);
+
+  const handleSave = async () => {
+    if (!user) {
+      toast({ title: "Please log in to save posts", variant: "destructive" });
+      return;
+    }
+    try {
+      if (isSaved) await removePost(event.id);
+      else await savePost(event.id);
+    } catch (err) {
+      console.error("Failed to save post", err);
+    }
+  };
+
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value={event.id}>
         <AccordionTrigger>{parseEvent(event).header}</AccordionTrigger>
         <AccordionContent>
           <NoteContent event={event} />
-          {filteredReplies.map((r, index) => (
+          <div className="mt-2">
+            <Button variant="secondary" size="sm" onClick={handleSave}>
+              {isSaved ? "Unsave" : "Save"}
+            </Button>
+          </div>
+          {filteredReplies.map((r) => (
             <div
               key={r.id}
               className="pt-4 border-l pl-4"
